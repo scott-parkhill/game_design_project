@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "wO96tkYQyykoWHuslUIGM8uErc95r7nBbNDWAYauxFidoFWDNtLTB/vYZGNokKfqZ7LhMEY+lzYwtwbAzA8zoA==",
+  "success": true,
+  "projectFilePath": "/home/parkhill/Documents/UWO/Game Design/Project/Project.csproj",
+  "expectedPackageFiles": [
+    "/home/parkhill/.nuget/packages/microsoft.netcore.app.ref/7.0.0/microsoft.netcore.app.ref.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
