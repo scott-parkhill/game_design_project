@@ -7,6 +7,7 @@ public class Utility
 
 public enum Factions
 {
+    None,
     Dolphins,
     Pirates
 };
