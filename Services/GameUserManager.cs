@@ -10,7 +10,7 @@ public class GameUserManager : UserManager<GameUser>
 {
     readonly GameDbContext _dbContext;
 
-    public GameUserManager(GameDbContext relationalDbContext,
+    public GameUserManager(GameDbContext gameDbContext,
                         IUserStore<GameUser> store,
                         IOptions<IdentityOptions> optionsAccessor,
                         IPasswordHasher<GameUser> passwordHasher,
@@ -22,7 +22,7 @@ public class GameUserManager : UserManager<GameUser>
                         ILogger<UserManager<GameUser>> logger)
                     : base(store, optionsAccessor, passwordHasher, userValidator, passwordValidator, keyNormalizer, errors, services, logger) 
     {
-        _dbContext = relationalDbContext;
+        _dbContext = gameDbContext;
     }
 
 }
