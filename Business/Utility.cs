@@ -11,3 +11,11 @@ public enum Factions
     Dolphins,
     Pirates
 };
+
+public enum TaskResults
+{
+    Success,
+    Failure,
+    Invalid,
+};
+
