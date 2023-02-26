@@ -18,4 +18,3 @@ public enum TaskResults
     Failure,
     Invalid,
 };
-
