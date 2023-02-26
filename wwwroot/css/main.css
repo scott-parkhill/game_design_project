@@ -38,6 +38,7 @@ html, body {
 .page .sidebar {
   background-image: linear-gradient(180deg, #078282 0%, #339e66 70%);
   height: auto;
+  min-height: 100vh;
 }
 
 .nav-scrollable a {

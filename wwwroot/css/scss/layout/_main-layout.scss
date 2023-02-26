@@ -12,5 +12,6 @@ html, body {
     .sidebar {
         background-image: linear-gradient(180deg, $sea-green 0%, $algae-green 70%);
         height: auto;
+        min-height: 100vh;
     } 
 }
