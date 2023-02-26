@@ -1,0 +1,10 @@
+@code
+{
+    [CascadingParameter(Name = "TabContainer")] TabContainer Container { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Icon { get; set; }
+    
+    protected override void OnInitialized() => Container?.AddTab(this);
+
+}

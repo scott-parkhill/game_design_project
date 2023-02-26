@@ -1,0 +1,38 @@
+<CascadingValue Value="@this" Name="TabContainer">
+    @ChildContent
+</CascadingValue>
+
+<ul class="nav nav-tabs">
+    @foreach (var tab in tabs)
+    {
+        <li @key="tab" class="nav-item" style="cursor: pointer;" @onclick=@(() => SetActiveTab(tab))>
+            <a class="nav-link @(tab == activeTab ? "active" : "")">
+                @if (!string.IsNullOrWhiteSpace(tab.Icon))
+                {
+                    <span class="@($"oi oi-{tab.Icon}") text-info" aria-hidden="true">&nbsp;</span>
+                }
+                @tab.Title
+            </a>
+        </li>
+    }
+</ul>
+
+<br />
+@activeTab?.ChildContent
+
+@code
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    TabSection activeTab;
+    List<TabSection> tabs = new();
+    
+    public void AddTab(TabSection tab)
+    {
+        tabs.Add(tab);
+        if (activeTab is null)
+            SetActiveTab(tab);
+        StateHasChanged();
+    }
+
+    void SetActiveTab(TabSection tab) => activeTab = tab;
+}
