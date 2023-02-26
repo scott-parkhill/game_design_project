@@ -1,0 +1,72 @@
+@page "/sandbox"
+
+@inject IToastService toastService
+@inject ILogger<Sandbox> logger
+
+<BreadcrumbContainer>
+    <Breadcrumb Href="/">Home</Breadcrumb>
+    <Breadcrumb Href="/sandbox">Sandbox</Breadcrumb>
+</BreadcrumbContainer>
+
+<br />
+<button class="btn btn-primary" type="button" @onclick="@(() => throw new ArgumentException("A test case exception."))">Throw Exception</button>
+<br />
+
+<button class="btn btn-success" type="button" @onclick="@(() => Toast("success", "A success!"))">Success</button>
+<button class="btn btn-danger" type="button" @onclick="@(() => Toast("error", "An error!"))">Error</button>
+<button class="btn btn-info" type="button" @onclick="@(() => Toast("info", "Some info!"))">Info</button>
+<button class="btn btn-warning" type="button" @onclick="@(() => Toast("warning", "A warning!"))">Warning</button>
+
+<br />
+<br />
+
+<br />
+
+<CardDeck>
+    <Card Image="dolphin.png">
+        <Title>Dolphin</Title>
+        <Text>This is a lovely drawing of a dolphin.</Text>
+    </Card>
+    <Card Image="pirate.png">
+        <Title>Pirate</Title>
+        <Text>This is a sketch of a pirate sketch artist.</Text>
+    </Card>
+</CardDeck>
+
+<br />
+
+<TabContainer>
+    <TabSection Title="Dolphins">
+        Stuff about dolphins and things.
+    </TabSection>
+    <TabSection Title="Pirates">
+        Stuff about pirates and things.
+    </TabSection>
+</TabContainer>
+
+
+@code
+{
+    void Toast(string type, string message)
+    {
+        switch (type)
+        {
+            case "success":
+                toastService.ShowSuccess(message);
+                break;
+            case "error":
+                toastService.ShowError(message);
+                break;
+            case "info":
+                toastService.ShowInfo(message);
+                break;
+            case "warning":
+                toastService.ShowWarning(message);
+                break;
+            default:
+                throw new ArgumentException("Invalid toast type.", nameof(type));
+        }
+
+        logger.LogInformation($"Type: {type}\tMessage: {message}");
+    }
+}
