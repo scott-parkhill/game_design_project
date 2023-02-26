@@ -6,6 +6,7 @@ using Chaos.Data;
 
 namespace Chaos.Services;
 
+// Currently unused.
 public class GameUserManager : UserManager<GameUser>
 {
     readonly GameDbContext _dbContext;
