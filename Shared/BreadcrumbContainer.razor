@@ -1,0 +1,32 @@
+<CascadingValue Value="@this" Name="BreadcrumbContainer">
+    @ChildContent
+</CascadingValue>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        @foreach(var crumb in breadcrumbs)
+        {
+            @if (crumb == breadcrumbs.Last())
+            {
+                <li @key="crumb" class="breadcrumb-item active" aria-current="page">@crumb.ChildContent</li>
+            }
+            else
+            {
+                <li @key="crumb" class="breadcrumb-item"><a href="@crumb.Href">@crumb.ChildContent</a></li>
+            }
+        }
+    </ol>
+</nav>
+
+@code
+{
+    // TODO Make breadcrumb css class.
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    List<Breadcrumb> breadcrumbs = new();
+
+    public void AddBreadcrumb(Breadcrumb crumb)
+    {
+        breadcrumbs.Add(crumb);
+        StateHasChanged();
+    }
+}
