@@ -4,37 +4,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<button type="button" @onclick="@(() => Toast("success", "A success!"))">Success</button>
-<button type="button" @onclick="@(() => Toast("error", "An error!"))">Error</button>
-<button type="button" @onclick="@(() => Toast("info", "Some info!"))">Info</button>
-<button type="button" @onclick="@(() => Toast("warning", "A warning!"))">Warning</button>
-
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-@code
-{
-    void Toast(string type, string message)
-    {
-        switch (type)
-        {
-            case "success":
-                toastService.ShowSuccess(message);
-                break;
-            case "error":
-                toastService.ShowError(message);
-                break;
-            case "info":
-                toastService.ShowInfo(message);
-                break;
-            case "warning":
-                toastService.ShowWarning(message);
-                break;
-            default:
-                throw new ArgumentException("Invalid toast type.", nameof(type));
-        }
-
-        logger.LogInformation($"Type: {type}\tMessage: {message}");
-    }
-}
