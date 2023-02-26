@@ -1,0 +1,27 @@
+<CascadingValue Value="this" Name="CardDeck">
+    @ChildContent
+</CascadingValue>
+
+<div class="container">
+    <div class="row">
+        @foreach (var card in cards)
+        {
+            <div @key="card" class="col-md-6 col-lg-6">
+                @{ card.RenderCard(__builder); }
+            </div>
+        }
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    List<Card> cards = new();
+
+    public void AddCard(Card card)
+    {
+        cards.Add(card);
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Components.Rendering
+
+@if (Render)
+{
+    RenderCard(__builder);
+}
+
+@code
+{
+    [CascadingParameter(Name = "CardDeck")] CardDeck? Deck { get; set; }
+    [Parameter] public bool Render { get; set; }
+    [Parameter] public string? Image { get; set; }
+    [Parameter] public string? Alt { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public RenderFragment? Title { get; set; }
+    [Parameter] public RenderFragment? Text { get; set; }
+    [Parameter] public RenderFragment? LinkText { get; set; }
+
+    protected override void OnInitialized() => Deck?.AddCard(this);
+
+    public void RenderCard(RenderTreeBuilder __builder)
+    {
+        // TODO Change this inline style and make the widths work up to a max and move to SCSS.
+        <div class="card" style="width: auto;">
+            <img src="@($"/images/{Image}")" class="card-img-top" alt="@Alt">
+            <div class="card-body">
+                <h5 class="card-title">@Title</h5>
+                <p class="card-text">@Text</p>
+                @if (Link is not null)
+                {
+                    <NavLink class="btn btn-primary" href="@($"/{Link}")">
+                        @if (!String.IsNullOrWhiteSpace(Icon))
+                        {
+                            <span class="@($"oi oi-{Icon}")" aria-hidden="true">&nbsp;</span>
+                        }
+                        @LinkText
+                    </NavLink>
+                }
+            </div>
+        </div>
+    }
+}
