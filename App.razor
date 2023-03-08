@@ -1,14 +1,42 @@
-﻿<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
+﻿@using Chaos.Models.DbModels
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using Chaos.Shared
+
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject SignInManager<GameUser> signInManager
+
+<CascadingAuthenticationState>
+    <CascadingValue Value="loggedUserId">
+        <Router AppAssembly="@typeof(App).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <NotAuthorizedPage />
+                    </NotAuthorized>
+                    <Authorizing>
+                        <h1>Authorization in progress...</h1>
+                    </Authorizing>
+                </AuthorizeRouteView>
+            </Found>
+            <NotFound>
+                <NotFoundPage />
+            </NotFound>
+        </Router>
+    </CascadingValue>
 </CascadingAuthenticationState>
+
+@code
+{
+    string loggedUserId = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (signInManager.IsSignedIn(authState.User))
+        {
+            loggedUserId = authState.User.Claims.Where(u => u.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        }
+    }
+}
