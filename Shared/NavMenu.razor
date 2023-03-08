@@ -1,4 +1,10 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<div class="navbar">
+
+</div>
+
+
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Chaos</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -27,10 +33,23 @@
     </nav>
 </div>
 
-@code {
-    private bool collapseNavMenu = true;
+@code
+{
+    [CascadingParameter] protected Task<AuthenticationState> AuthState { get; set; }
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    bool collapseNavMenu;
+    bool isLoggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthState).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            isLoggedIn = true;
+        }
+    }
 
     private void ToggleNavMenu()
     {
