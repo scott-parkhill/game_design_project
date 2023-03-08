@@ -2,7 +2,8 @@ namespace Chaos.Business;
 
 public class Utility
 {
-
+    public const string NotFound = "/not-found";
+    public const string NotAuthorized = "/not-authorized";
 }
 
 public enum Factions
