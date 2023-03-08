@@ -1,4 +1,6 @@
-namespace Chaos.Business;
+using Chaos.Business;
+
+namespace Chaos.Data;
 
 public class DbResult
 {
