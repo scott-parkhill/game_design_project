@@ -5,30 +5,34 @@
 
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject SignInManager<GameUser> signInManager
+@inject UserManager<GameUser> userManager
 
 <CascadingAuthenticationState>
-    <CascadingValue Value="loggedUserId">
-        <Router AppAssembly="@typeof(App).Assembly">
-            <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                    <NotAuthorized>
-                        <NotAuthorizedPage />
-                    </NotAuthorized>
-                    <Authorizing>
-                        <h1>Authorization in progress...</h1>
-                    </Authorizing>
-                </AuthorizeRouteView>
-            </Found>
-            <NotFound>
-                <NotFoundPage />
-            </NotFound>
-        </Router>
+    <CascadingValue Value="@loggedUserId" Name="LoggedUserId">
+        <CascadingValue Value="@username" Name="Username">
+            <Router AppAssembly="@typeof(App).Assembly">
+                <Found Context="routeData">
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                        <NotAuthorized>
+                            <NotAuthorizedPage />
+                        </NotAuthorized>
+                        <Authorizing>
+                            <h1>Authorization in progress...</h1>
+                        </Authorizing>
+                    </AuthorizeRouteView>
+                </Found>
+                <NotFound>
+                    <NotFoundPage />
+                </NotFound>
+            </Router>
+        </CascadingValue>
     </CascadingValue>
 </CascadingAuthenticationState>
 
 @code
 {
     string loggedUserId = "";
+    string username = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,6 +41,7 @@
         if (signInManager.IsSignedIn(authState.User))
         {
             loggedUserId = authState.User.Claims.Where(u => u.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            username = (await userManager.FindByIdAsync(loggedUserId)).UserName;
         }
     }
 }
