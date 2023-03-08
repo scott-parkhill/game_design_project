@@ -7,11 +7,12 @@
 @using Chaos.Models.DbModels
 @using Chaos.Services
 @using Microsoft.AspNetCore.Identity
+@using Chaos.Data
 
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authorizationStateProvider
 @inject IToastService toastService
-@inject IGameDbService GameDbService
+@inject IGameDbService dbService
 @inject UserManager<GameUser> userManager
 @inject SignInManager<GameUser> signInManager
 
@@ -80,8 +81,9 @@
         }
 
         result = await userManager.AddToRoleAsync(user, "StandardUser");
+        var armyResult = await dbService.AddArmy(user.Id);
 
-        if (result.Succeeded)
+        if (result.Succeeded && armyResult.Result is TaskResults.Success)
         {
             toastService.ShowSuccess("Account created!");
             await Task.Delay(1500);
@@ -93,8 +95,6 @@
             await userManager.DeleteAsync(user);
             toastService.ShowError("An error occurred during account creation. Please try again.");
         }
-
-
     }
 
     class RegistrationModel
