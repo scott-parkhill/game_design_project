@@ -1,8 +1,10 @@
 namespace Chaos.Models.DbModels;
 
+#nullable disable
 public class Army
 {
     public int Id { get; set; }
+    public string UserId { get; set; }
 
     #region ArmyAdministration
     public int RecruitRate { get; set; } = 10;
