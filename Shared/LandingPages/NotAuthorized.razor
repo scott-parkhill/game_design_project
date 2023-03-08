@@ -1,0 +1,6 @@
+@page "/not-authorized"
+@inject NavigationManager navManager
+
+<h1>You are not authorized to view that content.</h1>
+<br />
+<button class="btn btn-primary" type="button" @onclick="@(() => navManager.NavigateTo("/"))">Home</button>
