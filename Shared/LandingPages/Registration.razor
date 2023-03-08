@@ -1,0 +1,109 @@
+@page "/Identity/Account/Register"
+@page "/register"
+
+@using System.ComponentModel.DataAnnotations
+@using Chaos.Business
+@using Chaos.Models.DbModels
+@using Chaos.Services
+@using Microsoft.AspNetCore.Identity
+
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authorizationStateProvider
+@inject IToastService toastService
+@inject IGameDbService GameDbService
+@inject UserManager<GameUser> userManager
+
+<h1>Registration</h1>
+
+<EditForm Model="model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label>Email</label>
+        <InputText class="form-control" @bind-Value="model.Email" />
+        <ValidationMessage For="() => model.Email" />
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Username</label>
+        <InputText class="form-control" @bind-Value="model.Username" />
+        <ValidationMessage For="() => model.Username" />
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Password</label>
+        <InputText class="form-control" @bind-Value="model.Password" />
+        <ValidationMessage For="() => model.Password" />
+    </div>
+    
+    <label class="mt-2">Faction</label>
+    <InputSelect class="form-select" @bind-Value="model.Faction">
+        @foreach (var faction in Enum.GetValues<Factions>())
+        {
+            <option @key="faction" value="@faction">@(Enum.GetName<Factions>(faction))</option>
+        }
+    </InputSelect>
+    <ValidationMessage For="() => model.Faction" />
+
+    <button class="btn btn-primary mt-3" type="submit">Register</button>
+
+</EditForm>
+
+@code
+{
+    RegistrationModel model = new();
+
+    async Task OnValidSubmit()
+    {
+        GameUser newUser = new()
+        {
+            Email = model.Email,
+            UserName = model.Username,
+            Faction = model.Faction
+        };
+
+        var result = await userManager.CreateAsync(newUser, model.Password);
+
+        if (!result.Succeeded)
+        {
+            toastService.ShowError("An error occurred during account creation. Please try again.");
+        }
+
+        var user = await userManager.FindByEmailAsync(model.Email);
+        result = await userManager.AddToRoleAsync(user, "StandardUser");
+
+        if (result.Succeeded)
+        {
+            toastService.ShowSuccess("Account created!");
+            navManager.NavigateTo("/");
+        }
+        else
+        {
+            await userManager.DeleteAsync(user);
+            toastService.ShowError("An error occurred during account creation. Please try again.");
+        }
+
+
+    }
+
+    class RegistrationModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [Display(Description = "Username")]
+        [StringLength(20, MinimumLength = 5, ErrorMessage = "{0} must be between {2} and {1} characters long.")]
+        public string Username { get; set; } = "";
+
+        [Required]
+        [Display(Description = "Password")]
+        [StringLength(20, MinimumLength = 5, ErrorMessage = "Password must be between 5 and 20 characters long.")]
+        public string Password { get; set; } = "";
+
+        [Display(Description = "Faction")]
+        [RequireEnumNotNone(ErrorMessage = "Must choose a faction.")]
+        public Factions Faction { get; set; } = Factions.None;
+    }
+}
