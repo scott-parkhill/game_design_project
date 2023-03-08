@@ -26,6 +26,10 @@
   content: "An error has occurred.";
 }
 
+.validation-message {
+  color: red;
+}
+
 html, body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
