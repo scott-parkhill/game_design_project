@@ -1,0 +1,21 @@
+namespace Chaos.Models.DbModels;
+
+public class Army
+{
+    public int Id { get; set; }
+
+    #region ArmyAdministration
+    public int RecruitRate { get; set; } = 10;
+    public DateTime LastRecruitment { get; set; } = DateTime.UtcNow;
+    public int Coins { get; set; }
+    public int CoinGenerationRate { get; set; } = 100;
+    public DateTime LastCoinGeneration { get; set; } = DateTime.UtcNow;
+    #endregion
+
+
+    #region ArmySoldiers
+    public int Recruits { get; set; }
+    public int Attackers { get; set; }
+    public int Defenders { get; set; }
+    #endregion
+}
