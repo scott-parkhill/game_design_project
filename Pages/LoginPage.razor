@@ -1,0 +1,59 @@
+@using Chaos.Models.DbModels
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<GameUser> userManager
+@inject SignInManager<GameUser> signInManager
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+<h1>Login</h1>
+
+<EditForm Model="login" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <InputText class="form-control" @bind-Value="login.Username" />
+        <ValidationMessage For="() => login.Username" />
+    </div>
+
+    <div class="form-group mt-2">
+        <InputText class="form-control" @bind-Value="login.Password" />
+        <ValidationMessage For="() => login.Password" />
+    </div>
+
+    <button class="btn btn-primary mt-3" type="button">Login</button>
+
+</EditForm>
+
+@code
+{
+    UserLoginModel login = new();
+
+    async Task OnValidSubmit()
+    {
+        var user = await userManager.FindByNameAsync(login.Username);
+
+        var result = await signInManager.PasswordSignInAsync(user, login.Password);
+
+        if (result != SignInResult.Success)
+            toast.ShowError("Failed to sign user in.");
+        else
+        {
+            toastService.ShowSuccess("Successfully logged in.");
+            await Task.Delay(1500);
+            navigationManager.NavigateTo("/");
+        }
+    }
+
+    class UserLoginModel
+    {
+        [Required]
+        [StringLength(30, ErrorMessage = "Username is too long.")]
+        public string Username { get; set; } = "";
+
+        [Required]
+        [StringLength(30, ErrorMessage = "Password is too long.")]
+        public string Password { get; set; } = "";
+    }
+}
