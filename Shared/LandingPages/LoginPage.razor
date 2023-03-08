@@ -1,11 +1,16 @@
+@page "/login"
+@namespace Chaos.Shared
+
 @using Chaos.Models.DbModels
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.DataProtection
 
 @inject UserManager<GameUser> userManager
 @inject SignInManager<GameUser> signInManager
 @inject IToastService toastService
 @inject NavigationManager navigationManager
+@inject IDataProtectionProvider dataProtectionProvider
 
 <h1>Login</h1>
 
@@ -13,16 +18,18 @@
     <DataAnnotationsValidator />
 
     <div class="form-group">
+        <label>Username</label>
         <InputText class="form-control" @bind-Value="login.Username" />
         <ValidationMessage For="() => login.Username" />
     </div>
 
     <div class="form-group mt-2">
+        <label>Password</label>
         <InputText class="form-control" @bind-Value="login.Password" />
         <ValidationMessage For="() => login.Password" />
     </div>
 
-    <button class="btn btn-primary mt-3" type="button">Login</button>
+    <button class="btn btn-primary mt-3" type="submit">Login</button>
 
 </EditForm>
 
@@ -34,15 +41,26 @@
     {
         var user = await userManager.FindByNameAsync(login.Username);
 
-        var result = await signInManager.PasswordSignInAsync(user, login.Password);
+        if (user is null)
+        {
+            toastService.ShowError("No user by that username exists.");
+            return;
+        }
 
-        if (result != SignInResult.Success)
-            toast.ShowError("Failed to sign user in.");
-        else
+        if (await userManager.CheckPasswordAsync(user, login.Password))
         {
             toastService.ShowSuccess("Successfully logged in.");
-            await Task.Delay(1500);
-            navigationManager.NavigateTo("/");
+            var token = await userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "SignIn");
+            var data = $"{user.Id}|{token}|true";
+            var protector = dataProtectionProvider.CreateProtector("SignIn");
+            var protectedData = protector.Protect(data);
+
+            navigationManager.NavigateTo("/account/signin?token=" + protectedData, forceLoad: true);
+        }
+
+        else
+        {
+            toastService.ShowSuccess("Login failed.");
         }
     }
 
