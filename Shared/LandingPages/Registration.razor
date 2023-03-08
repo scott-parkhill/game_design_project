@@ -12,6 +12,7 @@
 @inject IToastService toastService
 @inject IGameDbService GameDbService
 @inject UserManager<GameUser> userManager
+@inject SignInManager<GameUser> signInManager
 
 <h1>Registration</h1>
 
@@ -70,11 +71,19 @@
         }
 
         var user = await userManager.FindByEmailAsync(model.Email);
+
+        if (user is null)
+        {
+            toastService.ShowError("An error occurred during account creation. Please try again.");
+        }
+
         result = await userManager.AddToRoleAsync(user, "StandardUser");
 
         if (result.Succeeded)
         {
             toastService.ShowSuccess("Account created!");
+            await Task.Delay(1500);
+            await signInManager.SignInAsync(user);
             navigationManager.NavigateTo("/");
         }
         else
