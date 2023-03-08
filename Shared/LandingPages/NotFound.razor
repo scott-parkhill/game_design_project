@@ -1,6 +1,6 @@
 @page "/not-found"
-@inject NavigationManager navManager
+@inject NavigationManager navigationManager
 
 <h1>The content you were looking for was not found.</h1>
 <br />
-<button class="btn btn-primary" type="button" @onclick="@(() => navManager.NavigateTo("/"))">Home</button>
+<button class="btn btn-primary" type="button" @onclick="@(() => navigationManager.NavigateTo("/"))">Home</button>

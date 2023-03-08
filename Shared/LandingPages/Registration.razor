@@ -7,7 +7,7 @@
 @using Chaos.Services
 @using Microsoft.AspNetCore.Identity
 
-@inject NavigationManager navManager
+@inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authorizationStateProvider
 @inject IToastService toastService
 @inject IGameDbService GameDbService
@@ -75,7 +75,7 @@
         if (result.Succeeded)
         {
             toastService.ShowSuccess("Account created!");
-            navManager.NavigateTo("/");
+            navigationManager.NavigateTo("/");
         }
         else
         {
