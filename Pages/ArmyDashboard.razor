@@ -1,0 +1,102 @@
+@page "/army-dashboard"
+
+@using Chaos.Models.ViewModels
+@using Chaos.Business
+
+@inject IGameDbService dbService
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+@if (loading)
+{
+    <h1>Loading...</h1>
+}
+
+else if (error)
+{
+    <h1>An error has occurred.</h1>
+}
+
+else
+{
+    <h1>@($"{Username}'s Army")</h1>
+
+    <TabContainer>
+        <TabSection Title="Army Administration">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Coin</th>
+                        <th scope="col">Coin Generation Rate</th>
+                        <th scope="col">Recruitment Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@userArmy.Coins</td>
+                        <td>@userArmy.CoinGenerationRate per day</td>
+                        <td>@userArmy.RecruitRate per day</td>
+                    </tr>
+                </tbody>
+            </table>
+        </TabSection>
+        <TabSection Title="Army Status">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Recruits</th>
+                        <th scope="col">Attackers</th>
+                        <th scope="col">Defenders</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@userArmy.Recruits</td>
+                        <td>@userArmy.Attackers</td>
+                        <td>@userArmy.Defenders</td>
+                    </tr>
+                </tbody>
+            </table>
+        </TabSection>
+        <TabSection Title="Training">
+            <div class="d-flex flex-col">
+                <div class="oi oi-arrow-top" />
+                <div class="oi oi-arrow-bottom" />
+            </div>
+        </TabSection>
+    </TabContainer>
+}
+
+@code
+{
+    [CascadingParameter(Name = "LoggedUserId")] protected string LoggedUserId { get; set; } = null!;
+    [CascadingParameter(Name = "Username")] protected string Username { get; set; } = null!;
+
+    ArmyViewModel userArmy = new();
+
+    bool loading = true;
+    bool error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (LoggedUserId is null)
+            navigationManager.NavigateTo(Utility.NotAuthorized);
+
+        userArmy = await dbService.GetArmyViewModel(LoggedUserId);
+
+        if (userArmy is null)
+        {
+            error = true;
+            loading = false;
+            return;
+        }
+
+        loading = false;
+    }
+
+    class TrainingModel
+    {
+        public int Attackers { get; set; }
+        public int Defenders { get; set; }
+    }
+}
