@@ -37,6 +37,7 @@ builder.Services.AddDefaultIdentity<GameUser>(options =>
 })
     .AddUserManager<UserManager<GameUser>>()
     .AddRoles<IdentityRole>()
+    .AddSignInManager<GameUser>()
     .AddEntityFrameworkStores<GameDbContext>();
 
 #endregion
