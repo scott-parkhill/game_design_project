@@ -1,3 +1,5 @@
+global using Chaos.Services;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -5,11 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Chaos.Areas.Identity;
-using Chaos.Data;
 using Chaos.Models.DbModels;
-using Chaos.Services;
 using Chaos.Services.GameDbService;
 using Blazored.Toast;
+using Chaos.Business;
+using Chaos.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContextFactory<GameDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<GameUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<GameUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
+    .AddUserManager<UserManager<GameUser>>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<GameDbContext>();
 
 #endregion
@@ -41,7 +51,7 @@ builder.Services.AddBlazoredToast();
 
 #region DI Services
 
-builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<GameUser>>();
 builder.Services.AddScoped<IGameDbService, GameDbService>();
 
 #endregion
