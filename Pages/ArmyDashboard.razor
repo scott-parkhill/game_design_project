@@ -1,4 +1,5 @@
 @page "/army-dashboard"
+@attribute [Authorize(Roles = "StandardUser")]
 
 @using Chaos.Models.ViewModels
 @using Chaos.Business
@@ -59,10 +60,37 @@ else
             </table>
         </TabSection>
         <TabSection Title="Training">
-            <div class="d-flex flex-col">
-                <div class="oi oi-arrow-top" />
-                <div class="oi oi-arrow-bottom" />
-            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Recruits Available</th>
+                        <th scope="col">New Attackers</th>
+                        <th scope="col">New Defenders</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@numUnusedRecruits</td>
+                        <td>
+                            <div class="d-flex flex-col">
+                                @numNewAttackers
+                                <div class="oi oi-arrow-top pl-2" @onclick="IncreaseAttackers" />
+                                <div class="oi oi-arrow-bottom" @onclick="DecreaseAttackers" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-col">
+                                @numNewDefenders
+                                <div class="oi oi-arrow-top pl-2" @onclick="IncreaseDefenders" />
+                                <div class="oi oi-arrow-bottom" @onclick="DecreaseDefenders" />
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-primary" @onclick="SubmitArmyChanges">Submit</button>
+
         </TabSection>
     </TabContainer>
 }
@@ -73,6 +101,9 @@ else
     [CascadingParameter(Name = "Username")] protected string Username { get; set; } = null!;
 
     ArmyViewModel userArmy = new();
+    int numUnusedRecruits => userArmy.Recruits - numNewAttackers - numNewDefenders;
+    int numNewAttackers;
+    int numNewDefenders;
 
     bool loading = true;
     bool error;
@@ -82,7 +113,7 @@ else
         if (LoggedUserId is null)
             navigationManager.NavigateTo(Utility.NotAuthorized);
 
-        userArmy = await dbService.GetArmyViewModel(LoggedUserId);
+        var armyResult = await dbService.GetArmyViewModel(LoggedUserId);
 
         if (userArmy is null)
         {
@@ -91,7 +122,52 @@ else
             return;
         }
 
+        userArmy = armyResult;
+
+        await dbService.UpdateArmies();
+
         loading = false;
+    }
+
+    void IncreaseAttackers()
+    {
+        if (numUnusedRecruits - 1 >= 0)
+            ++numNewAttackers;
+    }
+
+    void DecreaseAttackers()
+    {
+        if (numNewAttackers > 0)
+            --numNewAttackers;
+    }
+
+    void IncreaseDefenders()
+    {
+        if (numUnusedRecruits - 1 >= 0)
+            ++numNewDefenders;
+    }
+
+    void DecreaseDefenders()
+    {
+        if (numNewDefenders > 0)
+            --numNewDefenders;
+    }
+
+    async Task SubmitArmyChanges()
+    {
+        var (result, message) = await dbService.TrainRecruits(LoggedUserId, numNewAttackers, numNewDefenders);
+
+        if (result != TaskResults.Success)
+        {
+            toastService.ShowError(message);
+        }
+        else
+        {
+            toastService.ShowSuccess(message);
+            userArmy = await dbService.GetArmyViewModel(LoggedUserId);
+            numNewAttackers = 0;
+            numNewDefenders = 0;
+        }
     }
 
     class TrainingModel
