@@ -8,6 +8,7 @@
 @using Chaos.Services
 @using Microsoft.AspNetCore.Identity
 @using Chaos.Data
+@using Microsoft.AspNetCore.DataProtection
 
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authorizationStateProvider
@@ -15,6 +16,7 @@
 @inject IGameDbService dbService
 @inject UserManager<GameUser> userManager
 @inject SignInManager<GameUser> signInManager
+@inject IDataProtectionProvider dataProtectionProvider
 
 <h1>Registration</h1>
 
@@ -87,8 +89,13 @@
         {
             toastService.ShowSuccess("Account created!");
             await Task.Delay(1500);
-            await signInManager.SignInAsync(user, true);
-            navigationManager.NavigateTo("/");
+
+            var token = await userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "SignIn");
+            var data = $"{user.Id}|{token}|true";
+            var protector = dataProtectionProvider.CreateProtector("SignIn");
+            var protectedData = protector.Protect(data);
+
+            navigationManager.NavigateTo("/account/signin?token=" + protectedData, forceLoad: true);
         }
         else
         {
