@@ -72,4 +72,29 @@ public partial class GameDbService : IGameDbService
 
         return new(TaskResults.Success, "Successfully added recruits and coins.");
     }
+
+    public async Task<DbResult> TrainRecruits(string loggedUserId, int numNewAttackers, int numNewDefenders)
+    {
+        var army = await _context.Armies.Where(u => u.UserId == loggedUserId).FirstOrDefaultAsync();
+
+        if (army is null)
+            return new(TaskResults.Invalid, "No army exists for that user.");
+
+        army.Recruits = army.Recruits - numNewAttackers - numNewDefenders;
+        army.Attackers += numNewAttackers;
+        army.Defenders += numNewDefenders;
+
+        _context.Update(army);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return new(TaskResults.Failure, "Failed to update army.");
+        }
+
+        return new(TaskResults.Success, "Army successfully updated.");
+    }
 }

@@ -17,6 +17,9 @@ public interface IGameDbService
 
     /// <summary> This method updates all recruitment and coin generation stuff and is very hacky. </summary>
     Task<DbResult> UpdateArmies();
+
+    /// <summary> Train recruits within an army. </summary>
+    Task<DbResult> TrainRecruits(string loggedUserId, int numNewAttackers, int numNewDefenders);
     #endregion
 
     #region GameUsers
