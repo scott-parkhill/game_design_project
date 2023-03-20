@@ -37,7 +37,7 @@ To make sure you're developing on your dev branch, type `git branch` to see your
 
 Install the SCSS compiler with `npm`:
 
-`npm install -g sass postcss autoprefixer`
+`npm install -g sass postcss-cli autoprefixer`
 
 To run the compiler, execute:
 
