@@ -8,6 +8,7 @@ public class ArmyViewModel
     public int Coins { get; set; } = -1;
     public int CoinGenerationRate { get; set; } = -1;
     public DateTime LastCoinGeneration { get; set; } = DateTime.UnixEpoch;
+    public UserWeaponsData UserWeapons { get; set; } = new();
     #endregion
 
     #region ArmySoldiers

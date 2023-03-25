@@ -12,6 +12,7 @@ public class Army
     public int Coins { get; set; }
     public int CoinGenerationRate { get; set; } = 100;
     public DateTime LastCoinGeneration { get; set; } = DateTime.UtcNow;
+    public string UserWeaponsJsonData { get; set; } = "{}";
     #endregion
 
 
