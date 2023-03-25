@@ -19,7 +19,7 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
         //Offensive Weapons
         { WeaponTypes.ButterKnife, new("Butter Knife", "Clam Shell", ActionTypes.Offense, 1000, 100)},
         { WeaponTypes.Poignard, new("Poignard", "Coral Shank", ActionTypes.Offense, 4800, 500)},
-        { WeaponTypes.Cutalss, new("Cutlass", "Barracuda", ActionTypes.Offense, 10_000, 1100)},
+        { WeaponTypes.Cutlass, new("Cutlass", "Barracuda", ActionTypes.Offense, 10_000, 1100)},
         { WeaponTypes.Schooner, new("Schooner", "Marlin", ActionTypes.Offense, 65_000, 7000)},
         { WeaponTypes.DavyJonesCutlass, new("Davy Jones' Cutlass", "Triden of Atlantis", ActionTypes.Offense, 260_000, 29_000)},
         { WeaponTypes.Frigate, new("Frigate", "Killer Whale", ActionTypes.Offense, 500_000, 60_000)},
@@ -70,7 +70,7 @@ public enum WeaponTypes
 {
     ButterKnife,
     Poignard,
-    Cutalss,
+    Cutlass,
     Schooner,
     DavyJonesCutlass,
     Frigate,

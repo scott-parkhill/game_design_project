@@ -1,8 +1,21 @@
+using Chaos.Business;
+
 namespace Chaos.Models;
 
 public class UserWeaponsData
 {
     public List<UserWeapon> UserWeapons { get; set; } = new();
+
+    public IEnumerable<(WeaponTypes WeaponType, Weapon Weapon)> GetWeaponsByActionType(ActionTypes actionType)
+    {
+        List<(WeaponTypes WeaponType, Weapon Weapon)> weapons = UserWeapons.Select(u => (u.WeaponType, Weapon.Weapons[u.WeaponType])).ToList();
+        
+        foreach (var weapon in weapons)
+        {
+            if (weapon.Weapon.ActionType == actionType)
+                yield return weapon;
+        }
+    }
 }
 
 public class UserWeapon
