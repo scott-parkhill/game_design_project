@@ -1,4 +1,5 @@
 using Chaos.Business;
+using System.Collections.Immutable;
 
 namespace Chaos.Models;
 
@@ -13,7 +14,7 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
     };
 
     /// <summary> Dictionary containing all the available weapons in the game, keyed to WeaponTypes. </summary>
-    public static readonly Dictionary<WeaponTypes, Weapon> Weapons = new()
+    public static readonly ImmutableDictionary<WeaponTypes, Weapon> Weapons = new Dictionary<WeaponTypes, Weapon>()
     {
         //Offensive Weapons
         { WeaponTypes.ButterKnife, new("Butter Knife", "Clam Shell", ActionTypes.Offense, 1000, 100)},
@@ -34,7 +35,7 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
         { WeaponTypes.BlackbeardsTunic, new("Blackbeard's Tunic", "Sea Urchin Mail", ActionTypes.Defense, 500_000, 60_000)},
         { WeaponTypes.ShipCamouflage, new("Ship Camouflage", "Octopus Camouflage", ActionTypes.Defense, 1_100_000, 125_000)},
         { WeaponTypes.OceanFort, new("Ocean Fort", "Great Barrier Reef", ActionTypes.Defense, 2_100_000, 250_000)},
-    };
+    }.ToImmutableDictionary();
 
     /// <summary> Get an enumerable of Weapons of a specific ActionType. </summary>
     public static IEnumerable<(WeaponTypes, Weapon)> GetWeaponsByActionType(ActionTypes actionType)
