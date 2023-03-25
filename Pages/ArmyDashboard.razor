@@ -60,36 +60,21 @@ else
             </table>
         </TabSection>
         <TabSection Title="Training">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Recruits Available</th>
-                        <th scope="col">New Attackers</th>
-                        <th scope="col">New Defenders</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@numUnusedRecruits</td>
-                        <td>
-                            <div class="d-flex flex-col">
-                                @numNewAttackers
-                                <div class="oi oi-arrow-top pl-2" @onclick="IncreaseAttackers" />
-                                <div class="oi oi-arrow-bottom" @onclick="DecreaseAttackers" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex flex-col">
-                                @numNewDefenders
-                                <div class="oi oi-arrow-top pl-2" @onclick="IncreaseDefenders" />
-                                <div class="oi oi-arrow-bottom" @onclick="DecreaseDefenders" />
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <button type="button" class="btn btn-primary" @onclick="SubmitArmyChanges">Submit</button>
+            <EditForm Model="trainingModel" OnValidSubmit="SaveArmyChanges">
+                <DataAnnotationsValidator />
+                Recruits Available: @numUnusedRecruits
+                <br />
+                <br />
+                New Attackers: 
+                <InputNumber class="form-control" @bind-Value="trainingModel.Attackers" />
+                <ValidationMessage For="() => trainingModel.Attackers" />
+                <br />
+                New Defenders:
+                <InputNumber class="form-control" @bind-Value="trainingModel.Defenders" />
+                <ValidationMessage For="() => trainingModel.Defenders" />
+                <br />
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </EditForm>
 
         </TabSection>
     </TabContainer>
@@ -101,9 +86,9 @@ else
     [CascadingParameter(Name = "Username")] protected string Username { get; set; } = null!;
 
     ArmyViewModel userArmy = new();
-    int numUnusedRecruits => userArmy.Recruits - numNewAttackers - numNewDefenders;
-    int numNewAttackers;
-    int numNewDefenders;
+    int numUnusedRecruits => userArmy.Recruits - trainingModel.Attackers - trainingModel.Defenders;
+
+    TrainingModel trainingModel = new();
 
     bool loading = true;
     bool error;
@@ -129,50 +114,32 @@ else
         loading = false;
     }
 
-    void IncreaseAttackers()
+    async Task SaveArmyChanges()
     {
-        if (numUnusedRecruits - 1 >= 0)
-            ++numNewAttackers;
-    }
+        var (result, message) = await dbService.TrainRecruits(LoggedUserId, trainingModel.Attackers, trainingModel.Defenders, 0, 0);
 
-    void DecreaseAttackers()
-    {
-        if (numNewAttackers > 0)
-            --numNewAttackers;
-    }
-
-    void IncreaseDefenders()
-    {
-        if (numUnusedRecruits - 1 >= 0)
-            ++numNewDefenders;
-    }
-
-    void DecreaseDefenders()
-    {
-        if (numNewDefenders > 0)
-            --numNewDefenders;
-    }
-
-    async Task SubmitArmyChanges()
-    {
-        var (result, message) = await dbService.TrainRecruits(LoggedUserId, numNewAttackers, numNewDefenders);
-
-        if (result != TaskResults.Success)
+        if (result is TaskResults.Success)
         {
             toastService.ShowError(message);
+        }
+        else if (result is TaskResults.Invalid)
+        {
+            toastService.ShowInfo(message);
         }
         else
         {
             toastService.ShowSuccess(message);
             userArmy = await dbService.GetArmyViewModel(LoggedUserId!) ?? new();
-            numNewAttackers = 0;
-            numNewDefenders = 0;
+            trainingModel = new();
         }
     }
 
     class TrainingModel
     {
+        [RequiredNotNegative(ErrorMessage = "Can't recruit negative attackers.")]
         public int Attackers { get; set; }
+
+        [RequiredNotNegative(ErrorMessage = "Can't recruit negative defenders.")]
         public int Defenders { get; set; }
     }
 }
