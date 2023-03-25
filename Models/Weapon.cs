@@ -56,7 +56,7 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
     }.ToImmutableDictionary();
 
     /// <summary> Get an enumerable of Weapons of a specific ActionType. </summary>
-    public static IEnumerable<(WeaponTypes, Weapon)> GetWeaponsByActionType(ActionTypes actionType)
+    public static IEnumerable<(WeaponTypes WeaponType, Weapon Weapon)> GetWeaponsByActionType(ActionTypes actionType)
     {
         foreach (var (key, value) in Weapons)
         {
