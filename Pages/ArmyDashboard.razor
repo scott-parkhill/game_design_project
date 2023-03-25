@@ -113,9 +113,9 @@ else
         if (LoggedUserId is null)
             navigationManager.NavigateTo(Utility.NotAuthorized);
 
-        var armyResult = await dbService.GetArmyViewModel(LoggedUserId);
+        var armyResult = await dbService.GetArmyViewModel(LoggedUserId!);
 
-        if (userArmy is null)
+        if (armyResult is null)
         {
             error = true;
             loading = false;
@@ -164,7 +164,7 @@ else
         else
         {
             toastService.ShowSuccess(message);
-            userArmy = await dbService.GetArmyViewModel(LoggedUserId);
+            userArmy = await dbService.GetArmyViewModel(LoggedUserId!) ?? new();
             numNewAttackers = 0;
             numNewDefenders = 0;
         }
