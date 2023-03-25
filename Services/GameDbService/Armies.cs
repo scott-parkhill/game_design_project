@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Chaos.Extensions;
 using Chaos.Data;
 using Chaos.Business;
+using Chaos.Models;
+using System.Text.Json;
 
 namespace Chaos.Services.GameDbService;
 
@@ -17,7 +19,8 @@ public partial class GameDbService : IGameDbService
         Army army = new()
         {
             UserId = loggedUserId,
-            Recruits = 20
+            Recruits = 20,
+            UserWeaponsJsonData = "{}"
         };
 
         await _context.AddAsync(army);
@@ -36,7 +39,7 @@ public partial class GameDbService : IGameDbService
 
     public async Task<ArmyViewModel?> GetArmyViewModel(string userId)
     {
-        return await _context.Armies.Where(u => u.UserId == userId).ToViewModel().FirstOrDefaultAsync();
+        return await _context.Armies.Where(u => u.UserId == userId).ToViewModel().SingleOrDefaultAsync();
     }
 
     // TODO This is hacktastic, fix.
@@ -73,16 +76,26 @@ public partial class GameDbService : IGameDbService
         return new(TaskResults.Success, "Successfully added recruits and coins.");
     }
 
-    public async Task<DbResult> TrainRecruits(string loggedUserId, int numNewAttackers, int numNewDefenders)
+    public async Task<DbResult> TrainRecruits(string loggedUserId, int newAttackers, int newDefenders, int newSentries, int newSappers)
     {
-        var army = await _context.Armies.Where(u => u.UserId == loggedUserId).FirstOrDefaultAsync();
+        if (newAttackers < 0 || newDefenders < 0 || newSentries < 0 || newSappers < 0)
+            return new(TaskResults.Invalid, "Cannot have any trainee values that are less than zero.");
+
+        var newTrainees = newAttackers + newDefenders + newSentries + newSappers;
+
+        if (newTrainees == 0)
+            return new(TaskResults.Success, "No trainees added, as requested lol.");
+
+        var army = await _context.Armies.Where(u => u.UserId == loggedUserId).SingleOrDefaultAsync();
 
         if (army is null)
             return new(TaskResults.Invalid, "No army exists for that user.");
 
-        army.Recruits = army.Recruits - numNewAttackers - numNewDefenders;
-        army.Attackers += numNewAttackers;
-        army.Defenders += numNewDefenders;
+        army.Recruits -= newTrainees;
+        army.Attackers += newAttackers;
+        army.Defenders += newDefenders;
+        army.Sentries += newSentries;
+        army.Sappers += newSappers;
 
         _context.Update(army);
 
@@ -96,5 +109,53 @@ public partial class GameDbService : IGameDbService
         }
 
         return new(TaskResults.Success, "Army successfully updated.");
+    }
+
+    public async Task<DbResult> UpdateUserWeapons(string loggedUserId, params (int Delta, bool IsPurchasing, WeaponTypes WeaponType)[] weapons)
+    {
+        var army = await _context.Armies.Where(u => u.UserId == loggedUserId).SingleOrDefaultAsync();
+
+        if (army is null)
+            return new(TaskResults.Invalid, "Army doesn't exist.");
+        
+        var costTotal = weapons.Where(u => u.IsPurchasing).Sum(u => u.Delta * Weapon.Weapons[u.WeaponType].Cost);
+
+        if (army.Coins - costTotal < 0)
+            return new(TaskResults.Failure, "Not enough money to purchase all the weapons.");
+
+        var currentWeapons = JsonSerializer.Deserialize<UserWeaponsData>(army.UserWeaponsJsonData) ?? new();
+
+        foreach (var (delta, _, weaponType) in weapons)
+        {
+            var weapon = Weapon.Weapons[weaponType];
+            
+            var userWeapon = currentWeapons.UserWeapons.Where(u => u.WeaponType == weaponType).FirstOrDefault();
+
+            if (userWeapon is null)
+                currentWeapons.UserWeapons.Add(new(delta >= 0 ? delta : 0, weaponType));
+            else
+            {
+                userWeapon.Count += delta;
+
+                if (userWeapon.Count < 0)
+                    return new(TaskResults.Invalid, $"Cannot have a negative amount of weapons of type {weaponType}.");
+            }
+        }
+
+        army.UserWeaponsJsonData = JsonSerializer.Serialize(currentWeapons);
+        army.Coins -= costTotal;
+
+        _context.Update(army);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return new(TaskResults.Failure, "Failed to update the database with the new weapon counts/purchases.");
+        }
+
+        return new(TaskResults.Success, "Successfully saved weapon changes.");
     }
 }

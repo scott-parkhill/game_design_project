@@ -2,6 +2,7 @@ using Chaos.Business;
 using Chaos.Models.DbModels;
 using Chaos.Data;
 using Chaos.Models.ViewModels;
+using Chaos.Models;
 
 namespace Chaos.Services;
 
@@ -19,7 +20,10 @@ public interface IGameDbService
     Task<DbResult> UpdateArmies();
 
     /// <summary> Train recruits within an army. </summary>
-    Task<DbResult> TrainRecruits(string loggedUserId, int numNewAttackers, int numNewDefenders);
+    Task<DbResult> TrainRecruits(string loggedUserId, int newAttackers, int newDefenders, int newSentries, int newSappers);
+
+    /// <summary> Update the UserWeapons property with the new list of weapons, and remove the cost of the new weapons from the user's gold. </summary>
+    Task<DbResult> UpdateUserWeapons(string loggedUserId, params (int Delta, bool IsPurchasing, WeaponTypes WeaponType)[] weapons);
     #endregion
 
     #region GameUsers
