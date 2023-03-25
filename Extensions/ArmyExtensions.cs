@@ -19,6 +19,8 @@ public static class ArmyExtensions
             Recruits = u.Recruits,
             Attackers = u.Attackers,
             Defenders = u.Defenders,
+            Sentries = u.Sentries,
+            Sappers = u.Sappers,
             UserWeapons = JsonSerializer.Deserialize<UserWeaponsData>(u.UserWeaponsJsonData, new JsonSerializerOptions()) ?? new()
         });
     }    

@@ -11,9 +11,12 @@ public class ArmyViewModel
     public UserWeaponsData UserWeapons { get; set; } = new();
     #endregion
 
+
     #region ArmySoldiers
     public int Recruits { get; set; }
     public int Attackers { get; set; }
     public int Defenders { get; set; }
+    public int Sentries { get; set; }
+    public int Sappers { get; set; }
     #endregion
 }
