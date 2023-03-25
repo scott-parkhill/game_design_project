@@ -4,6 +4,7 @@ public class Utility
 {
     public const string NotFound = "/not-found";
     public const string NotAuthorized = "/not-authorized";
+    public static readonly Random rng = new((int)DateTime.UtcNow.TimeOfDay.TotalMicroseconds);
 }
 
 public enum Factions
