@@ -37,12 +37,12 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
     };
 
     /// <summary> Get an enumerable of Weapons of a specific ActionType. </summary>
-    public static IEnumerable<Weapon> GetWeaponsByActionType(ActionTypes actionType)
+    public static IEnumerable<(WeaponTypes, Weapon)> GetWeaponsByActionType(ActionTypes actionType)
     {
-        foreach (var (_, value) in Weapons)
+        foreach (var (key, value) in Weapons)
         {
             if (value.ActionType == actionType)
-                yield return value;
+                yield return (key, value);
         }
     }
 }
