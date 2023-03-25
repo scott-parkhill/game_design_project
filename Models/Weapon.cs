@@ -1,5 +1,7 @@
 using Chaos.Business;
 
+namespace Chaos.Models;
+
 /// <summary> An abstract weapon that can be used for attack, defense, spying, etc. </summary>
 public record Weapon(string Name, string DolphinName, ActionTypes ActionType, int Cost, double Strength)
 {
