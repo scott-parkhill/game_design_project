@@ -12,10 +12,8 @@ public class RequiredNotNegativeAttribute : ValidationAttribute
 
             if (result is false)
                 return false;
-            else if (number >= 0)
-                return true;
-            else
-                return false;
+
+            return number >= 0 ? true : false;
         }
         else
             return false;
