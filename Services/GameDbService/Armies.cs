@@ -91,6 +91,9 @@ public partial class GameDbService : IGameDbService
         if (army is null)
             return new(TaskResults.Invalid, "No army exists for that user.");
 
+        if (army.Recruits - newTrainees < 0)
+            return new(TaskResults.Invalid, "Not enough recruits exist to train.");
+
         army.Recruits -= newTrainees;
         army.Attackers += newAttackers;
         army.Defenders += newDefenders;
