@@ -24,6 +24,6 @@ public enum ActionTypes
 {
     Offense,
     Defense,
-    Recon,
-    Sentry
+    Sentry,
+    Sapping
 };

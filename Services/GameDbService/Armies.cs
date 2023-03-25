@@ -132,7 +132,12 @@ public partial class GameDbService : IGameDbService
             var userWeapon = currentWeapons.UserWeapons.Where(u => u.WeaponType == weaponType).FirstOrDefault();
 
             if (userWeapon is null)
-                currentWeapons.UserWeapons.Add(new(delta >= 0 ? delta : 0, weaponType));
+            {
+                if (delta < 0)
+                    return new(TaskResults.Invalid, $"Cannot have a negative amount of weapons of type {weaponType}.");
+
+                currentWeapons.UserWeapons.Add(new(delta, weaponType));
+            }
             else
             {
                 userWeapon.Count += delta;
