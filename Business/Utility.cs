@@ -20,11 +20,6 @@ public enum TaskResults
     Invalid,
 };
 
-public enum WeaponTypes
-{
-    BlackPowderCannon
-};
-
 public enum ActionTypes
 {
     Offense,

@@ -28,3 +28,8 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
         }
     }
 }
+
+public enum WeaponTypes
+{
+    BlackPowderCannon
+};
