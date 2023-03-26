@@ -4,19 +4,20 @@ namespace Chaos.Models.DbModels;
 public class SpyReport
 {
     public int Id { get; set; }
-    public string AggressorId { get; set; }
-    public string DefenderId { get; set; }
+    public string SapperId { get; set; }
+    public string SentryId { get; set; }
+    public DateTime SpyTime { get; set; }
 
 
-    #region Aggressor
-    public double AggressorSapperStrength { get; set; }
+    #region Sapper
+    public double SapperStrength { get; set; }
     public string SapperToolsLostJson { get; set; } = "{}";
     #endregion
 
 
-    #region Defender
-    public double DefenderMinimumDefence { get; set; }
-    public double DefenderMaximumDefence { get; set; }
-    public string DefenderToolsLostJson { get; set; } = "{}";
+    #region Sentry
+    public double SentryMinimumDefence { get; set; }
+    public double SentryMaximumDefence { get; set; }
+    public string SentryToolsLostJson { get; set; } = "{}";
     #endregion
 }
