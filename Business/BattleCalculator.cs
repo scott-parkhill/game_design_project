@@ -28,7 +28,7 @@ public class BattleCalculator{
     };
 
     //Method for calculating the outcome of a battle.
-    public (double, string) CalculateBattleOutcome(double attackerScore, double defenderScore){ 
+    public (double Outcome, string Message) CalculateBattleOutcome(double attackerScore, double defenderScore){ 
         double randomValue = Utility.Rng.NextDouble() * 2; //generates random double between 0 and 2
 
         double outcome = (attackerScore * randomValue) / defenderScore;
@@ -51,7 +51,7 @@ public class BattleCalculator{
     }
 
     //Method that returns the variance in the defence values after a sapping/recon operation is conducted
-    public ((double, double), string) CalculateSapperOutcome(double sapperScore, double sentryScore, double defenceScore){
+    public ((double Min, double Max) DefenceRange, string Message) CalculateSapperOutcome(double sapperScore, double sentryScore, double defenceScore){
         double ratio = sapperScore / sentryScore;
         double min = 0, max = 0;
         string resultMessage = "";
