@@ -23,5 +23,6 @@ public class UserWeapon
     public int Count { get; set; }
     public WeaponTypes WeaponType { get; init; }
 
+    public UserWeapon() {}
     public UserWeapon(int count, WeaponTypes weaponType) => (Count, WeaponType) = (count, weaponType);
 }
