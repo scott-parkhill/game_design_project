@@ -10,8 +10,6 @@ public static class IntExtensions
         string numberAsString = number.ToString();
         numberAsString = new(numberAsString.Reverse().ToArray());
 
-        sb.Append(' ');
-
         for (int i = 0; i < numberAsString.Length;)
         {
             sb.Append(numberAsString[i++]);
@@ -23,7 +21,7 @@ public static class IntExtensions
                 sb.Append(numberAsString[i]);
 
             if (i++ < numberAsString.Length - 1)
-                sb.Append(' ');
+                sb.Append(',');
         }
 
         return new(sb.ToString().Reverse().ToArray());
