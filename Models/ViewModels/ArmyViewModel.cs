@@ -19,4 +19,6 @@ public class ArmyViewModel
     public int Sentries { get; set; }
     public int Sappers { get; set; }
     #endregion
+
+    public ArmyViewModel Clone() => (ArmyViewModel)this.MemberwiseClone();
 }
