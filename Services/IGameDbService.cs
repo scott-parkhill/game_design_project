@@ -19,7 +19,7 @@ public interface IGameDbService
     /// <summary> This method updates all recruitment and coin generation stuff and is very hacky. </summary>
     Task<DbResult> UpdateArmies();
 
-    /// <summary> Train recruits within an army. </summary>
+    /// <summary> Train recruits within an army.</summary>
     Task<DbResult> TrainRecruits(string loggedUserId, int newAttackers, int newDefenders, int newSentries, int newSappers);
 
     /// <summary> Update the UserWeapons property with the new list of weapons, and remove the cost of the new weapons from the user's gold. </summary>
@@ -30,5 +30,22 @@ public interface IGameDbService
     
     /// <summary> Get the faction for a given user. </summary>
     Task<Factions> GetUserFaction(string loggedUserId);
+    #endregion
+
+
+    #region Reports
+
+    /// <summary> Create a new spy report. </summary>
+    Task<DbResult> CreateSpyReport(SpyReportViewModel spyReport);
+
+    /// <summary> Get all spy reports associated with a given user. </summary>
+    Task<List<SpyReportViewModel>> GetSpyReports(string loggedUserId);
+
+    /// <summary> Create a new after action report. </summary>
+    Task<DbResult> CreateAfterActionReport(AfterActionReportViewModel afterActionReport);
+
+    /// <summary> Get all after action reports associated with a given user. </summary>
+    Task<List<AfterActionReportViewModel>> GetAfterActionReports(string loggedUserId);
+
     #endregion
 }
