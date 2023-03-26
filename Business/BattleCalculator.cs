@@ -4,16 +4,16 @@ namespace Chaos.Business;
 public class BattleCalculator{
 
     //Method to get the battle outlook percentage and accompanying string for the scouting report.
-    public (double, string) getBattleOutlook(double attackerScore, double defenderScore){ 
+    public (double, string) GetBattleOutlook(double attackerScore, double defenderScore){ 
 
         double buffNeeded = defenderScore / attackerScore;
         double chanceToWin = 1 - (buffNeeded / 2.0);
 
-        return (chanceToWin, getOutlookString(chanceToWin));
+        return (chanceToWin, GetOutlookString(chanceToWin));
     }
 
     //Method that gets the string accompanying a certain percentage of success from scouting outlook
-    private string getOutlookString(double battleOutlook) => battleOutlook switch
+    private string GetOutlookString(double battleOutlook) => battleOutlook switch
     {
         0 => "No Chance of Victory",
         > 0 and <= 0.1 => "Near Certain Defeat",
@@ -28,7 +28,7 @@ public class BattleCalculator{
     };
 
     //Method for calculating the outcome of a battle.
-    public (double, string) calculateBattleOutcome(double attackerScore, double defenderScore){ 
+    public (double, string) CalculateBattleOutcome(double attackerScore, double defenderScore){ 
         double randomValue = Utility.Rng.NextDouble() * 2; //generates random double between 0 and 2
 
         double outcome = (attackerScore * randomValue) / defenderScore;
