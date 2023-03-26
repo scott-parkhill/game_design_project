@@ -48,7 +48,7 @@ else
     <br />
     <TabContainer>
         <TabSection Title="Offensive Weapons">
-            @GetWeaponsList(ActionTypes.Offense)
+            @GetWeaponsList(ActionTypes.Offence)
         </TabSection>
         <TabSection Title="Defensive Weapons">
             @GetWeaponsList(ActionTypes.Defence)
@@ -71,7 +71,7 @@ else
     List<WeaponPurchaseModel> weaponsPurchaseModel = new();
     Factions userFaction = Factions.None;
     ArmyViewModel armyViewModel = new();
-    double currentArmyScore => ArmyScore.GetArmyScore(armyViewModel.UserWeapons);
+    double currentArmyScore => ArmyScore.GetArmyScore(armyViewModel);
     double newArmyScore;
     int newArmyCoins;
     bool loading = true;
@@ -118,7 +118,10 @@ else
             newUserWeaponsData.UserWeapons.Add(newUserWeapon);
         }
 
-        newArmyScore = ArmyScore.GetArmyScore(newUserWeaponsData);
+        ArmyViewModel newArmyView = armyViewModel.Clone();
+        newArmyView.UserWeapons = newUserWeaponsData; 
+
+        newArmyScore = ArmyScore.GetArmyScore(newArmyView);
         newArmyCoins = armyViewModel.Coins - costs;
     }
 

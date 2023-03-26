@@ -17,14 +17,14 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
     public static readonly ImmutableDictionary<WeaponTypes, Weapon> Weapons = new Dictionary<WeaponTypes, Weapon>()
     {
         //Offensive Weapons
-        { WeaponTypes.ButterKnife, new("Butter Knife", "Clam Shell", ActionTypes.Offense, 1000, 100)},
-        { WeaponTypes.Poignard, new("Poignard", "Coral Shank", ActionTypes.Offense, 4800, 500)},
-        { WeaponTypes.Cutlass, new("Cutlass", "Barracuda", ActionTypes.Offense, 10_000, 1100)},
-        { WeaponTypes.Schooner, new("Schooner", "Marlin", ActionTypes.Offense, 65_000, 7000)},
-        { WeaponTypes.DavyJonesCutlass, new("Davy Jones' Cutlass", "Trident of Atlantis", ActionTypes.Offense, 260_000, 29_000)},
-        { WeaponTypes.Frigate, new("Frigate", "Killer Whale", ActionTypes.Offense, 500_000, 60_000)},
-        { WeaponTypes.BlackPowderCannon, new("Black Powder Cannon", "Monkfish Launcher", ActionTypes.Offense, 1_100_000, 125_000)},
-        { WeaponTypes.ManOWar, new("Man O' War", "Kraken", ActionTypes.Offense, 2_100_000, 260_000)},
+        { WeaponTypes.ButterKnife, new("Butter Knife", "Clam Shell", ActionTypes.Offence, 1000, 100)},
+        { WeaponTypes.Poignard, new("Poignard", "Coral Shank", ActionTypes.Offence, 4800, 500)},
+        { WeaponTypes.Cutlass, new("Cutlass", "Barracuda", ActionTypes.Offence, 10_000, 1100)},
+        { WeaponTypes.Schooner, new("Schooner", "Marlin", ActionTypes.Offence, 65_000, 7000)},
+        { WeaponTypes.DavyJonesCutlass, new("Davy Jones' Cutlass", "Trident of Atlantis", ActionTypes.Offence, 260_000, 29_000)},
+        { WeaponTypes.Frigate, new("Frigate", "Killer Whale", ActionTypes.Offence, 500_000, 60_000)},
+        { WeaponTypes.BlackPowderCannon, new("Black Powder Cannon", "Monkfish Launcher", ActionTypes.Offence, 1_100_000, 125_000)},
+        { WeaponTypes.ManOWar, new("Man O' War", "Kraken", ActionTypes.Offence, 2_100_000, 260_000)},
 
         //Defensive Weapons
         { WeaponTypes.LeatherCap, new("Leather Cap", "Coral Helm", ActionTypes.Defence, 1000, 100)},

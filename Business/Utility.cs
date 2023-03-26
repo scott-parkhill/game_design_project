@@ -23,7 +23,7 @@ public enum TaskResults
 
 public enum ActionTypes
 {
-    Offense,
+    Offence,
     Defence,
     Sentry,
     Sapping
