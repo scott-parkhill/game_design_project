@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 namespace Chaos.Models;
 
 /// <summary> An abstract weapon that can be used for attack, defense, spying, etc. </summary>
-public record Weapon(string Name, string DolphinName, ActionTypes ActionType, int Cost, double Strength)
+public record Weapon(string Name, string DolphinName, ActionTypes ActionType, int Cost, int Strength)
 {
     /// <summary> Gets the weapon's name based on what faction the user is in. This is to display to the user. </summary>
     public string GetDisplayName(Factions faction) => faction switch
@@ -21,7 +21,7 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
         { WeaponTypes.Poignard, new("Poignard", "Coral Shank", ActionTypes.Offense, 4800, 500)},
         { WeaponTypes.Cutlass, new("Cutlass", "Barracuda", ActionTypes.Offense, 10_000, 1100)},
         { WeaponTypes.Schooner, new("Schooner", "Marlin", ActionTypes.Offense, 65_000, 7000)},
-        { WeaponTypes.DavyJonesCutlass, new("Davy Jones' Cutlass", "Triden of Atlantis", ActionTypes.Offense, 260_000, 29_000)},
+        { WeaponTypes.DavyJonesCutlass, new("Davy Jones' Cutlass", "Trident of Atlantis", ActionTypes.Offense, 260_000, 29_000)},
         { WeaponTypes.Frigate, new("Frigate", "Killer Whale", ActionTypes.Offense, 500_000, 60_000)},
         { WeaponTypes.BlackPowderCannon, new("Black Powder Cannon", "Monkfish Launcher", ActionTypes.Offense, 1_100_000, 125_000)},
         { WeaponTypes.ManOWar, new("Man O' War", "Kraken", ActionTypes.Offense, 2_100_000, 260_000)},
