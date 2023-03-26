@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace Chaos.Models;
 
-/// <summary> An abstract weapon that can be used for attack, defense, spying, etc. </summary>
+/// <summary> An abstract weapon that can be used for attack, defence, spying, etc. </summary>
 public record Weapon(string Name, string DolphinName, ActionTypes ActionType, int Cost, int Strength)
 {
     /// <summary> Gets the weapon's name based on what faction the user is in. This is to display to the user. </summary>
@@ -27,14 +27,14 @@ public record Weapon(string Name, string DolphinName, ActionTypes ActionType, in
         { WeaponTypes.ManOWar, new("Man O' War", "Kraken", ActionTypes.Offense, 2_100_000, 260_000)},
 
         //Defensive Weapons
-        { WeaponTypes.LeatherCap, new("Leather Cap", "Coral Helm", ActionTypes.Defense, 1000, 100)},
-        { WeaponTypes.Parrot, new("Parrot", "Ocean Sunfih", ActionTypes.Defense, 4800, 500)},
-        { WeaponTypes.StackedLeatherArmour, new("Stacked Leather Armour", "Coral Armour", ActionTypes.Defense, 20_000, 2200)},
-        { WeaponTypes.SpanishPlateArmour, new("Spanish Plate Armour", "Sea Turtle Armour", ActionTypes.Defense, 65_000, 7000)},
-        { WeaponTypes.ReinforcedHullArmour, new("Reinforced Hull Armour", "Shark Skin", ActionTypes.Defense, 260_000, 29_000)},
-        { WeaponTypes.BlackbeardsTunic, new("Blackbeard's Tunic", "Sea Urchin Mail", ActionTypes.Defense, 500_000, 60_000)},
-        { WeaponTypes.ShipCamouflage, new("Ship Camouflage", "Octopus Camouflage", ActionTypes.Defense, 1_100_000, 125_000)},
-        { WeaponTypes.OceanFort, new("Ocean Fort", "Great Barrier Reef", ActionTypes.Defense, 2_100_000, 250_000)},
+        { WeaponTypes.LeatherCap, new("Leather Cap", "Coral Helm", ActionTypes.Defence, 1000, 100)},
+        { WeaponTypes.Parrot, new("Parrot", "Ocean Sunfih", ActionTypes.Defence, 4800, 500)},
+        { WeaponTypes.StackedLeatherArmour, new("Stacked Leather Armour", "Coral Armour", ActionTypes.Defence, 20_000, 2200)},
+        { WeaponTypes.SpanishPlateArmour, new("Spanish Plate Armour", "Sea Turtle Armour", ActionTypes.Defence, 65_000, 7000)},
+        { WeaponTypes.ReinforcedHullArmour, new("Reinforced Hull Armour", "Shark Skin", ActionTypes.Defence, 260_000, 29_000)},
+        { WeaponTypes.BlackbeardsTunic, new("Blackbeard's Tunic", "Sea Urchin Mail", ActionTypes.Defence, 500_000, 60_000)},
+        { WeaponTypes.ShipCamouflage, new("Ship Camouflage", "Octopus Camouflage", ActionTypes.Defence, 1_100_000, 125_000)},
+        { WeaponTypes.OceanFort, new("Ocean Fort", "Great Barrier Reef", ActionTypes.Defence, 2_100_000, 250_000)},
 
         //Sapper Tools
         { WeaponTypes.DivingWeight, new("Diving Weight", "Barnacles", ActionTypes.Sapping, 40_000, 4000)},

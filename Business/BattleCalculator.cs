@@ -13,7 +13,7 @@ public class BattleCalculator{
     }
 
     //Method that gets the string accompanying a certain percentage of success from scouting outlook
-    private string GetOutlookString(double battleOutlook) => battleOutlook switch
+    private static string GetOutlookString(double battleOutlook) => battleOutlook switch
     {
         0 => "No Chance of Victory",
         > 0 and <= 0.1 => "Near Certain Defeat",

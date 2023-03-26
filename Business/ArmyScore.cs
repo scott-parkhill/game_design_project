@@ -12,7 +12,7 @@ public static class ArmyScore{
         modifiers ??= new double[] { 1,1,1,1 };
         return new double[]{
             AttackScore(userWeapons, modifiers[(int)ActionTypes.Offense]),
-            DefenceScore(userWeapons, modifiers[(int)ActionTypes.Defense]),
+            DefenceScore(userWeapons, modifiers[(int)ActionTypes.Defence]),
             SentryScore(userWeapons, modifiers[(int)ActionTypes.Sentry]),
             SapperScore(userWeapons, modifiers[(int)ActionTypes.Sapping])
         };
@@ -36,7 +36,7 @@ public static class ArmyScore{
     private static double DefenceScore(UserWeaponsData weaponsData, double modifier){
         double score = 0;
 
-        var values = weaponsData.GetWeaponsByActionType(Business.ActionTypes.Defense);
+        var values = weaponsData.GetWeaponsByActionType(Business.ActionTypes.Defence);
 
         foreach(var item in values){
             score += item.Count * item.Weapon.Strength;
