@@ -76,6 +76,56 @@ public partial class GameDbService : IGameDbService
         return new(TaskResults.Success, "Successfully added recruits and coins.");
     }
 
+    public async Task<DbResult> UpdateSoldierCount(string loggedUserId, int recruits, int attackers, int defenders, int sentries, int sappers)
+    {
+        var army = await _context.Armies.Where(u => u.UserId == loggedUserId).FirstOrDefaultAsync();
+
+        if (army is null)
+            return new(TaskResults.Invalid, "Army doesn't exist for that user.");
+
+        army.Recruits = recruits;
+        army.Attackers = attackers;
+        army.Defenders = defenders;
+        army.Sentries = sentries;
+        army.Sappers = sappers;
+
+        _context.Update(army);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return new(TaskResults.Failure, "Failed to update soldier count.");
+        }
+
+        return new(TaskResults.Success, "Successfully updated soldier count.");
+    }
+
+    public async Task<DbResult> UpdateCoins(string loggedUserId, int coins)
+    {
+        var army = await _context.Armies.Where(u => u.UserId == loggedUserId).FirstOrDefaultAsync();
+
+        if (army is null)
+            return new(TaskResults.Invalid, "No army exists for that user.");
+
+        army.Coins = coins;
+
+        _context.Update(army);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return new(TaskResults.Failure, "Failed to update coins for the army.");
+        }
+
+        return new(TaskResults.Success, "Successfully updated coins for the army.");
+    }
+
     public async Task<DbResult> TrainRecruits(string loggedUserId, int newAttackers, int newDefenders, int newSentries, int newSappers)
     {
         if (newAttackers < 0 || newDefenders < 0 || newSentries < 0 || newSappers < 0)
