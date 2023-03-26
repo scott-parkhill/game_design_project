@@ -4,6 +4,9 @@ namespace Chaos.Business;
 
 public static class ArmyScore{
 
+    /// <summary> Get single value representing overall army score. </summary>
+    public static double GetArmyScore(UserWeaponsData userWeapons, double[]? modifiers = null) => AllScores(userWeapons, modifiers).Sum();
+
     /// <summary> Format for the modifiers array: [attack, defence, sentry, sapper] (same as ActionTypes). </summary>
     public static double[] AllScores(UserWeaponsData userWeapons, double[]? modifiers = null){
         modifiers ??= new double[] { 1,1,1,1 };
