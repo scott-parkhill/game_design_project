@@ -187,7 +187,7 @@ else
                                 @model.Weapon.Cost.PrettyPrintNumber()
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" @onchange="@(e => ChangeValidation(e, model))" />
+                                <input type="text" class="form-control" value="@model.PurchaseCount" @onchange="@(e => ChangeValidation(e, model))" />
                             </div>
                         </div>
                     }
