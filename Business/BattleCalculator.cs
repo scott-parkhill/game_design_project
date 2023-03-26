@@ -67,12 +67,12 @@ public class BattleCalculator{
                 max = defenceScore + (defenceScore * 0.1);
                 resultMessage = "Great Success";
                 break;
-            case var _ when ratio is >= 1.5 and < 75:
+            case var _ when ratio is >= 1.5 and < 1.75:
                 min = defenceScore - (defenceScore * 0.15);
                 max = defenceScore + (defenceScore * 0.15);
                 resultMessage = "Moderate Success";
                 break;
-            case var _ when ratio is >= 1.25 and < 5:
+            case var _ when ratio is >= 1.25 and < 1.5:
                 min = defenceScore - (defenceScore * 0.2);
                 max = defenceScore + (defenceScore * 0.2);
                 resultMessage = "Small Success";
@@ -94,7 +94,7 @@ public class BattleCalculator{
                 break;
             case var _ when ratio < 0.5: //function returns (0, 0) here so we need to remember to either present something like (0, inf) or "No Information" to the user on the results page
                 resultMessage = "Catastrophic Failure";
-                break;  
+                break;
         }
 
         return ((min, max), resultMessage);
