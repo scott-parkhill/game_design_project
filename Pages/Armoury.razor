@@ -1,8 +1,158 @@
+@page "/armoury"
+@attribute [Authorize(Roles = "StandardUser")]
+
+@using Chaos.Models
+@using Chaos.Business
+@using Chaos.Models.ViewModels
+@using Chaos.Extensions
+
 @inject IGameDbService dbService
 @inject IToastService toastService
 
+@if (loading)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <TabContainer>
+        <TabSection Title="Offensive Weapons">
+            @GetWeaponsList(ActionTypes.Offense)
+        </TabSection>
+        <TabSection Title="Defensive Weapons">
+            @GetWeaponsList(ActionTypes.Defense)
+        </TabSection>
+        <TabSection Title="Sentry Weapons">
+            @GetWeaponsList(ActionTypes.Sentry)
+        </TabSection>
+        <TabSection Title="Sapper Weapons">
+            @GetWeaponsList(ActionTypes.Sapping)
+        </TabSection>
+    </TabContainer>
+
+    <button type="button" class="btn btn-primary mt-2" @onclick="Submit">Purchase Weapons</button>
+}
 
 @code
 {
+    [CascadingParameter(Name = "LoggedUserId")] string LoggedUserId { get; set; } = null!;
+    List<WeaponPurchaseModel> weaponsPurchaseModel = new();
+    Factions userFaction = Factions.None;
+    ArmyViewModel armyViewModel = new();
+    bool loading = true;
 
+    protected override async Task OnInitializedAsync()
+    {
+        userFaction = await dbService.GetUserFaction(LoggedUserId);
+        armyViewModel = await dbService.GetArmyViewModel(LoggedUserId);
+
+        foreach (var (type, weapon) in Weapon.Weapons)
+        {
+            weaponsPurchaseModel.Add(new(type, weapon, 0));
+        }
+
+        loading = false;
+    }
+
+    void ChangeValidation(ChangeEventArgs args, WeaponPurchaseModel model)
+    {
+        var result = Int32.TryParse(args?.Value.ToString() ?? "", out int value);
+
+        if (result is false)
+        {
+            var name = model.Weapon.GetDisplayName(userFaction);
+            model.PurchaseCount = 0; 
+            toastService.ShowError($"Invalid purchase value for {name}.");
+        }
+        
+        else if (value < 0)
+        {
+            model.PurchaseCount = 0;
+            toastService.ShowError("Cannot purchase negative weapons.");
+        }
+        
+        else
+            model.PurchaseCount = value;
+    }
+
+    RenderFragment GetWeaponsList(ActionTypes actionType)
+    {
+        var actionTypeWeapons = Weapon.GetWeaponsByActionType(actionType).Select(u => u.WeaponType).ToList();
+        var purchaseList = weaponsPurchaseModel.Where(u => actionTypeWeapons.Contains(u.WeaponType)).ToList();
+
+        return
+            @<div class="container">
+                <div class="col">
+                    <div class="row d-flex align-items-center fs-5">
+                        <div class="col">
+                            Weapon Name
+                        </div>
+                        <div class="col">
+                            Weapon Strength
+                        </div>
+                        <div class="col">
+                            Currently Owned
+                        </div>
+                        <div class="col">
+                            Cost
+                        </div>
+                        <div class="col">
+                            Number to Purchase
+                        </div>
+                    </div>
+                    @foreach(var model in purchaseList)
+                    {
+                        <div class="pt-2 row d-flex align-items-center">
+                            <div class="col">
+                                @model.Weapon.GetDisplayName(userFaction)
+                            </div>
+                            <div class="col">
+                                @model.Weapon.Strength.PrettyPrintNumber()
+                            </div>
+                            <div class="col">
+                                @(armyViewModel.UserWeapons.UserWeapons.Where(u => u.WeaponType == model.WeaponType).FirstOrDefault()?.Count ?? 0)
+                            </div>
+                            <div class="col">
+                                @model.Weapon.Cost.PrettyPrintNumber()
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" @onchange="@(e => ChangeValidation(e, model))" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>;
+    }
+
+    async Task Submit()
+    {
+        loading = true;
+        if (weaponsPurchaseModel.Any(u => u.PurchaseCount < 0))
+        {
+            toastService.ShowError("Can't have negative purchase counts.");
+            return;
+        }
+
+        var (result, message) = await dbService.UpdateUserWeapons(LoggedUserId, weaponsPurchaseModel.Select(u => (u.PurchaseCount, true, u.WeaponType)).ToArray());
+
+        if (result != TaskResults.Success)
+        {
+            toastService.ShowError(message);
+        }
+        else
+        {
+            toastService.ShowSuccess(message);
+            weaponsPurchaseModel.ForEach(u => u.PurchaseCount = 0);
+        }
+        loading = false;
+    }
+
+    class WeaponPurchaseModel
+    {
+        public WeaponTypes WeaponType { get; set; }
+        public Weapon Weapon { get; set; } = null!;
+        public int PurchaseCount { get; set; }
+
+        public WeaponPurchaseModel(WeaponTypes weaponType, Weapon weapon, int purchaseCount) => (WeaponType, Weapon, PurchaseCount) = (weaponType, weapon, purchaseCount);
+    }
 }
