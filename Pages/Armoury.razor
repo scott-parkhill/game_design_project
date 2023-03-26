@@ -13,8 +13,39 @@
 {
     <h1>Loading...</h1>
 }
+else if (error)
+{
+    <h1>Error</h1>
+}
 else
 {
+    <h1>Armoury</h1>
+    <br />
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="fs-5">Current Army Score</div>
+                <div>@currentArmyScore</div>
+            </div>
+            <div class="col">
+                <div class="fs-5">Coins</div>
+                <div>@armyViewModel.Coins.PrettyPrintNumber()</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="fs-5">New Army Score</div>
+                <div>@newArmyScore</div>
+            </div>
+            <div class="col">
+                <div class="fs-5">Coins After Purchases</div>
+                <div>@newArmyCoins.PrettyPrintNumber()</div>
+            </div>
+        </div>
+    </div>
+
+    <br />
     <TabContainer>
         <TabSection Title="Offensive Weapons">
             @GetWeaponsList(ActionTypes.Offense)
@@ -30,6 +61,7 @@ else
         </TabSection>
     </TabContainer>
 
+    <br />
     <button type="button" class="btn btn-primary mt-2" @onclick="Submit">Purchase Weapons</button>
 }
 
@@ -39,19 +71,55 @@ else
     List<WeaponPurchaseModel> weaponsPurchaseModel = new();
     Factions userFaction = Factions.None;
     ArmyViewModel armyViewModel = new();
+    double currentArmyScore => ArmyScore.GetArmyScore(armyViewModel.UserWeapons);
+    double newArmyScore;
+    int newArmyCoins;
     bool loading = true;
+    bool error;
 
     protected override async Task OnInitializedAsync()
     {
         userFaction = await dbService.GetUserFaction(LoggedUserId);
-        armyViewModel = await dbService.GetArmyViewModel(LoggedUserId);
+        ArmyViewModel? avm = await dbService.GetArmyViewModel(LoggedUserId);
+
+        if (avm is null)
+        {
+            error = true;
+            return;
+        }
+
+        armyViewModel = avm;
 
         foreach (var (type, weapon) in Weapon.Weapons)
         {
             weaponsPurchaseModel.Add(new(type, weapon, 0));
         }
 
+        newArmyScore = currentArmyScore;
+        newArmyCoins = armyViewModel.Coins;
+
         loading = false;
+    }
+
+    void CalculateArmyChanges()
+    {
+        UserWeaponsData newUserWeaponsData = new();
+        int costs = 0;
+
+        foreach (var item in weaponsPurchaseModel)
+        {
+            costs += item.PurchaseCount * item.Weapon.Cost;
+            UserWeapon newUserWeapon = new()
+            {
+                Count = item.PurchaseCount + armyViewModel.UserWeapons.UserWeapons.Where(u => u.WeaponType == item.WeaponType).Select(u => u.Count).FirstOrDefault(),
+                WeaponType = item.WeaponType
+            };
+
+            newUserWeaponsData.UserWeapons.Add(newUserWeapon);
+        }
+
+        newArmyScore = ArmyScore.GetArmyScore(newUserWeaponsData);
+        newArmyCoins = armyViewModel.Coins - costs;
     }
 
     void ChangeValidation(ChangeEventArgs args, WeaponPurchaseModel model)
@@ -72,7 +140,10 @@ else
         }
         
         else
+        {
             model.PurchaseCount = value;
+            CalculateArmyChanges();
+        }
     }
 
     RenderFragment GetWeaponsList(ActionTypes actionType)
