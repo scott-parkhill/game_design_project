@@ -1,21 +1,24 @@
-namespace Chaos.Models;
+using Chaos.Models;
 
-public class ArmyScore{
+namespace Chaos.Business;
 
-    //format for the modifiers array: [attack, defence, sapper, sentry]
-    public double[] AllScores(UserWeaponsData userWeapons, double[] modifiers){
+public static class ArmyScore{
+
+    /// <summary> Format for the modifiers array: [attack, defence, sentry, sapper] (same as ActionTypes). </summary>
+    public static double[] AllScores(UserWeaponsData userWeapons, double[]? modifiers = null){
+        modifiers ??= new double[] { 1,1,1,1 };
         return new double[]{
-            AttackScore(userWeapons, modifiers[0]),
-            DefenceScore(userWeapons, modifiers[1]),
-            SapperScore(userWeapons, modifiers[2]),
-            SentryScore(userWeapons, modifiers[3])
+            AttackScore(userWeapons, modifiers[(int)ActionTypes.Offense]),
+            DefenceScore(userWeapons, modifiers[(int)ActionTypes.Defense]),
+            SentryScore(userWeapons, modifiers[(int)ActionTypes.Sentry]),
+            SapperScore(userWeapons, modifiers[(int)ActionTypes.Sapping])
         };
     }
 
     //formula is (weapon count) * (weapon strenghth) * (normalization value);
 
     //modifier is the normalization value that will be used to apply the buffs or debuffs
-    private double AttackScore(UserWeaponsData weaponsData, double modifier){
+    private static double AttackScore(UserWeaponsData weaponsData, double modifier){
         double score = 0;
 
         var values = weaponsData.GetWeaponsByActionType(Business.ActionTypes.Offense);
@@ -27,7 +30,7 @@ public class ArmyScore{
         return score * modifier;
     }
 
-    private double DefenceScore(UserWeaponsData weaponsData, double modifier){
+    private static double DefenceScore(UserWeaponsData weaponsData, double modifier){
         double score = 0;
 
         var values = weaponsData.GetWeaponsByActionType(Business.ActionTypes.Defense);
@@ -39,7 +42,7 @@ public class ArmyScore{
         return score * modifier;
     }
 
-    private double SentryScore(UserWeaponsData weaponsData, double modifier){
+    private static double SentryScore(UserWeaponsData weaponsData, double modifier){
         double score = 0;
 
         var values = weaponsData.GetWeaponsByActionType(Business.ActionTypes.Sentry);
@@ -51,7 +54,7 @@ public class ArmyScore{
         return score * modifier;
     }
 
-    private double SapperScore(UserWeaponsData weaponsData, double modifier){
+    private static double SapperScore(UserWeaponsData weaponsData, double modifier){
         double score = 0;
 
         var values = weaponsData.GetWeaponsByActionType(Business.ActionTypes.Sapping);
@@ -62,5 +65,4 @@ public class ArmyScore{
 
         return score * modifier;
     }
-
 }
