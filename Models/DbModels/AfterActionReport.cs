@@ -10,11 +10,13 @@ public class AfterActionReport
     #region Aggressor
     public int AggressorRecruitLosses { get; set; }
     public int AggressorAttackerLosses { get; set; }
+    public string AggressorToolsLostJson { get; set; } = "{}";
     #endregion
 
     #region Defender
     public int DefenderCoinLosses { get; set; }
     public int DefenderRecruitLosses { get; set; }
     public int DefenderDefenderLosses { get; set; }
+    public string DefenderToolsLostJson { get; set; }
     #endregion
 }
