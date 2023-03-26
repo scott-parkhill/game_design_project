@@ -30,6 +30,10 @@
   color: red;
 }
 
+input.solid-placeholder::placeholder {
+  opacity: 1;
+}
+
 html, body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
