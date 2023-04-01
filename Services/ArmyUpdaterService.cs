@@ -41,7 +41,8 @@ public class ArmyUpdaterService : IHostedService
 
         foreach (var army in armies)
         {
-            var armyScore = ArmyScore.GetArmyScore(Queryable.AsQueryable(new List<Army>() { army }).ToViewModel().First());
+            var userFaction = await _context.GameUsers.Where(u => u.Id == army.UserId).Select(u => u.Faction).FirstAsync();
+            var armyScore = ArmyScore.GetArmyScore(Queryable.AsQueryable(new List<Army>() { army }).ToViewModel().First(), userFaction);
 
             int generationMultiplier = armyScore switch
             {

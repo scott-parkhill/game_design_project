@@ -38,7 +38,7 @@ else
                         <td>@userArmy.Coins</td>
                         <td>@userArmy.CoinGenerationRate per day</td>
                         <td>@userArmy.RecruitRate per day</td>
-                        <td>@ArmyScore.GetArmyScore(userArmy)</td>
+                        <td>@ArmyScore.GetArmyScore(userArmy, userFaction)</td>
                     </tr>
                 </tbody>
             </table>
@@ -89,6 +89,7 @@ else
 
     ArmyViewModel userArmy = new();
     int numUnusedRecruits => userArmy.Recruits - trainingModel.Attackers - trainingModel.Defenders;
+    Factions userFaction = Factions.None;
 
     TrainingModel trainingModel = new();
 
@@ -100,6 +101,7 @@ else
         if (LoggedUserId is null)
             navigationManager.NavigateTo(Utility.NotAuthorized);
 
+        userFaction = await dbService.GetUserFaction(LoggedUserId!);
         var armyResult = await dbService.GetArmyViewModel(LoggedUserId!);
 
         if (armyResult is null)

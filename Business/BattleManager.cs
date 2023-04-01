@@ -31,8 +31,8 @@ public class BattleManager
         var defenderOriginalRecruits = defenderArmy.Recruits;
         var defenderOriginalDefenders = defenderArmy.Defenders;
         
-        var aggressorScore = ArmyScore.GetArmyScores(aggressorArmy)[(int)ActionTypes.Offence];
-        var defenderScore = ArmyScore.GetArmyScores(defenderArmy)[(int)ActionTypes.Defence];
+        var aggressorScore = ArmyScore.GetArmyScores(aggressorArmy, await _dbService.GetUserFaction(aggressorId))[(int)ActionTypes.Offence];
+        var defenderScore = ArmyScore.GetArmyScores(defenderArmy, await _dbService.GetUserFaction(defenderId))[(int)ActionTypes.Defence];
 
         var outcome = _battleCalculator.CalculateBattleOutcome(aggressorScore, defenderScore);
         #endregion

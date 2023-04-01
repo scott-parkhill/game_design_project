@@ -8,11 +8,18 @@ public static class ArmyScore{
     const double TrainedBaseRate = 2;
 
     /// <summary> Get single value representing overall army score. </summary>
-    public static double GetArmyScore(ArmyViewModel army, double[]? modifiers = null) => GetArmyScores(army, modifiers).Sum();
+    public static double GetArmyScore(ArmyViewModel army, Factions faction) => GetArmyScores(army, faction).Sum();
 
     /// <summary> Format for the modifiers array: [attack, defence, sentry, sapper] (same as ActionTypes). </summary>
-    public static double[] GetArmyScores(ArmyViewModel army, double[]? modifiers = null){
-        modifiers ??= new double[] { 1,1,1,1 };
+    public static double[] GetArmyScores(ArmyViewModel army, Factions faction)
+    {
+        double[] modifiers = faction switch
+        {
+            Factions.Pirates => new[] { 1.05, 1.05, 1, 1 },
+            Factions.Dolphins => new[] { 1, 1, 1.05, 1.05 },
+            _ => new[] { 1.0, 1, 1, 1 }
+        };
+            
         return new double[]{
             AttackScore(army, modifiers[(int)ActionTypes.Offence]),
             DefenceScore(army, modifiers[(int)ActionTypes.Defence]),
