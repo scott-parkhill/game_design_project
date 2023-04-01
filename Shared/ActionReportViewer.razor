@@ -1,0 +1,152 @@
+@using Chaos.Models.ViewModels
+@using Chaos.Business
+
+@inject IGameDbService dbService
+
+@if (loading)
+{
+    <h1>Loading...</h1>
+}
+else if (error)
+{
+    <h1>Error...</h1>
+}
+else
+{
+    @if (spyReport is not null)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Time of Action</td>
+                <td>Sapper Name</td>
+                <td>Sentry Name</td>
+                <td>Sapper Strength</td>
+                <td>Sentry Minimum Defence</td>
+                <td>Sentry Maximum Defence</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>@spyReport.SpyTime.ToShortDateString() @spyReport.SpyTime.ToShortTimeString()</td>
+                <td>@aggressorName</td>
+                <td>@defenderName</td>
+                <td>@spyReport.SapperStrength</td>
+                <td>@spyReport.SentryMinimumDefence</td>
+                <td>@spyReport.SentryMaximumDefence</td>
+            </tr>
+            </tbody>
+        </table>
+    }
+    else if (afterActionReport is not null)
+    {   
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Battle Time</td>
+                    <td>Aggressor Name</td>
+                    <td>Defender Name</td>
+                    <td>@GetCoinName() Stolen</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@afterActionReport.BattleTime.ToShortDateString() @afterActionReport.BattleTime.ToShortTimeString()</td>
+                    <td>@aggressorName</td>
+                    <td>@defenderName</td>
+                    <td>@afterActionReport.AggressorCoinGains</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <br />
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Aggressor Recruit Losses</td>
+                    <td>Aggressor Attacker Losses</td>
+                    <td>Defender Recruit Losses</td>
+                    <td>Defender Defender Losses</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@afterActionReport.AggressorRecruitLosses</td>
+                    <td>@afterActionReport.AggressorAttackerLosses</td>
+                    <td>@afterActionReport.DefenderRecruitLosses</td>
+                    <td>@afterActionReport.DefenderDefenderLosses</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+    
+    @if (spyReport is not null && spyReport.SapperToolsLost.UserWeapons.Any() && spyReport.SentryToolsLost.UserWeapons.Any())
+    {
+        <br/>
+        <h3>Weapon Losses</h3>
+        <TabContainer>
+            <TabSection Title="Aggressor Weapon Losses">
+                <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SapperToolsLost : afterActionReport!.AggressorToolsLost)"></UserWeaponsDisplay>
+            </TabSection>
+            <TabSection Title="Defender Weapon Losses">
+                <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SentryToolsLost : afterActionReport!.DefenderToolsLost)"></UserWeaponsDisplay>
+            </TabSection>
+        </TabContainer>
+    }
+
+}
+
+@code
+{
+    [CascadingParameter(Name = "LoggedUserId")] string LoggedUserId { get; set; } = null!;
+    [Parameter, EditorRequired] public int ReportId { get; set; }
+    [Parameter, EditorRequired] public ReportTypes ReportType { get; set; } = ReportTypes.None;
+
+    SpyReportViewModel? spyReport;
+    AfterActionReportViewModel? afterActionReport;
+
+    string aggressorName = "";
+    string defenderName = "";
+
+    bool loading = true;
+    bool error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        switch (ReportType)
+        {
+            case ReportTypes.AfterActionReport:
+                afterActionReport = await dbService.GetAfterActionReport(ReportId);
+                if (afterActionReport is null)
+                {
+                    error = true;
+                    return;
+                }
+                (aggressorName, defenderName) = await dbService.GetBelligerents(afterActionReport.AggressorId, afterActionReport.DefenderId);
+                break;
+            case ReportTypes.SpyReport:
+                spyReport = await dbService.GetSpyReport(ReportId);
+                if (spyReport is null)
+                {
+                    error = true;
+                    return;
+                }
+                (aggressorName, defenderName) = await dbService.GetBelligerents(spyReport.SapperId, spyReport.SentryId);
+                break;
+            default:
+                error = true;
+                return;
+        }
+        
+
+        loading = false;
+    }
+
+    async Task<string> GetCoinName()
+    {
+        var faction = await dbService.GetUserFaction(afterActionReport!.DefenderId);
+
+        return faction is Factions.Dolphins ? Utility.DolphinCurrency : Utility.PirateCurrency;
+    }
+}

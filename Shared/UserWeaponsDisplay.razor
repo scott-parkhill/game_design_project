@@ -1,0 +1,58 @@
+@using Chaos.Models;
+@using Chaos.Business
+
+@if (Data is not null)
+{
+    <TabContainer>
+        @if (Data.GetWeaponsByActionType(ActionTypes.Offence).Any())
+        {
+            <TabSection Title="Offensive Weapons">@GetWeaponsList(ActionTypes.Offence)</TabSection>
+        }
+        
+        @if (Data.GetWeaponsByActionType(ActionTypes.Defence).Any())
+        {
+            <TabSection Title="Defensive Weapons">@GetWeaponsList(ActionTypes.Defence)</TabSection>
+        }
+        
+        @if (Data.GetWeaponsByActionType(ActionTypes.Sentry).Any())
+        {
+            <TabSection Title="Sentry Weapons">@GetWeaponsList(ActionTypes.Sentry)</TabSection>
+        }
+        
+        @if (Data.GetWeaponsByActionType(ActionTypes.Sapping).Any())
+        {
+            <TabSection Title="Sapper Weapons">@GetWeaponsList(ActionTypes.Sapping)</TabSection>
+        }
+    </TabContainer>
+
+}
+
+@code
+{
+    [Parameter, EditorRequired] public UserWeaponsData? Data { get; set; }
+    [Parameter] public bool ShowAsWeaponsLost { get; set; }
+
+    RenderFragment GetWeaponsList(ActionTypes actionType)
+    {
+        return
+            @<div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Name</td>
+                            <td>@(ShowAsWeaponsLost ? "Weapons Lost" : "Weapon Count")</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var weapon in Data!.GetWeaponsByActionType(actionType))
+                        {
+                            <tr>
+                                <td>@Weapon.Weapons[weapon.WeaponType].Name</td>
+                                <td>@weapon.Count</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>;
+    }
+}
