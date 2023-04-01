@@ -26,38 +26,38 @@ else
         <TabSection Title="Army Administration">
             <table class="table">
                 <thead>
-                    <tr>
-                        <th scope="col">Coin</th>
-                        <th scope="col">Coin Generation Rate</th>
-                        <th scope="col">Recruitment Rate</th>
-                        <th scope="col">Overall Army Strength</th>
-                    </tr>
+                <tr>
+                    <th scope="col">Coin</th>
+                    <th scope="col">Coin Generation Rate</th>
+                    <th scope="col">Recruitment Rate</th>
+                    <th scope="col">Overall Army Strength</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>@userArmy.Coins</td>
-                        <td>@userArmy.CoinGenerationRate per day</td>
-                        <td>@userArmy.RecruitRate per day</td>
-                        <td>@ArmyScore.GetArmyScore(userArmy, userFaction)</td>
-                    </tr>
+                <tr>
+                    <td>@userArmy.Coins</td>
+                    <td>@userArmy.CoinGenerationRate per day</td>
+                    <td>@userArmy.RecruitRate per day</td>
+                    <td>@ArmyScore.GetArmyScore(userArmy, userFaction)</td>
+                </tr>
                 </tbody>
             </table>
         </TabSection>
         <TabSection Title="Army Status">
             <table class="table">
                 <thead>
-                    <tr>
-                        <th scope="col">Recruits</th>
-                        <th scope="col">Attackers</th>
-                        <th scope="col">Defenders</th>
-                    </tr>
+                <tr>
+                    <th scope="col">Recruits</th>
+                    <th scope="col">Attackers</th>
+                    <th scope="col">Defenders</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>@userArmy.Recruits</td>
-                        <td>@userArmy.Attackers</td>
-                        <td>@userArmy.Defenders</td>
-                    </tr>
+                <tr>
+                    <td>@userArmy.Recruits</td>
+                    <td>@userArmy.Attackers</td>
+                    <td>@userArmy.Defenders</td>
+                </tr>
                 </tbody>
             </table>
         </TabSection>
@@ -79,6 +79,62 @@ else
             </EditForm>
 
         </TabSection>
+        <TabSection Title="After Action Reports" @onclick="StopShowingReport">
+            @if (!showingReport)
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>Battle Time</td>
+                        <td>Aggressor Name</td>
+                        <td>Defender Name</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var report in afterActionReports)
+                    {
+                        <tr style="cursor:pointer" @onclick="() => ShowReport(report)">
+                            <td>@report.BattleTime.ToShortDateString @report.BattleTime.ToShortTimeString</td>
+                            <td>@aggressor</td>
+                            <td>@defender</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <ActionReportViewer ReportId="reportId" />
+            }
+        </TabSection>
+        <TabSection Title="Spy Reports" @onclick="() => showingReport = false">
+            @if (!showingReport)
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>Battle Time</td>
+                        <td>Sapper Name</td>
+                        <td>Sentry Name</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var report in spyReports)
+                    {
+                        <tr style="cursor:pointer" @onclick="() => ShowReport(report)">
+                            <td>@report.SpyTime.ToShortDateString @report.SpyTime.ToShortTimeString</td>
+                            <td>@aggressor</td>
+                            <td>@defender</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <ActionReportViewer ReportId="reportId" />
+            }
+        </TabSection>
     </TabContainer>
 }
 
@@ -91,18 +147,28 @@ else
     int numUnusedRecruits => userArmy.Recruits - trainingModel.Attackers - trainingModel.Defenders;
     Factions userFaction = Factions.None;
 
+    List<AfterActionReportViewModel> afterActionReports = new();
+    List<SpyReportViewModel> spyReports = new();
+
     TrainingModel trainingModel = new();
 
     bool loading = true;
     bool error;
+    bool showingReport;
+    int reportId;
+    string aggressor = "";
+    string defender = "";
 
     protected override async Task OnInitializedAsync()
     {
         if (LoggedUserId is null)
+        {
             navigationManager.NavigateTo(Utility.NotAuthorized);
+            return;
+        }
 
-        userFaction = await dbService.GetUserFaction(LoggedUserId!);
-        var armyResult = await dbService.GetArmyViewModel(LoggedUserId!);
+        userFaction = await dbService.GetUserFaction(LoggedUserId);
+        var armyResult = await dbService.GetArmyViewModel(LoggedUserId);
 
         if (armyResult is null)
         {
@@ -113,9 +179,26 @@ else
 
         userArmy = armyResult;
 
-        await dbService.UpdateArmies();
+        afterActionReports = await dbService.GetAfterActionReports(LoggedUserId);
+        spyReports = await dbService.GetSpyReports(LoggedUserId);
 
         loading = false;
+    }
+
+    void StopShowingReport() => showingReport = false;
+
+    async Task ShowReport(AfterActionReportViewModel report)
+    {
+        (aggressor, defender) = await dbService.GetBelligerents(report.AggressorId, report.DefenderId);
+        reportId = report.Id;
+        showingReport = true;
+    }
+    
+    async Task ShowReport(SpyReportViewModel report)
+    {
+        (aggressor, defender) = await dbService.GetBelligerents(report.SapperId, report.SentryId);
+        reportId = report.Id;
+        showingReport = true;
     }
 
     async Task SaveArmyChanges()

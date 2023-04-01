@@ -11,6 +11,7 @@ public static class ReportExtensions
     {
         return report.Select(u => new SpyReportViewModel()
         {
+            Id = u.Id,
             SapperId = u.SapperId,
             SentryId = u.SentryId,
             SpyTime = u.SpyTime,
@@ -18,7 +19,11 @@ public static class ReportExtensions
             SapperToolsLost = JsonSerializer.Deserialize<UserWeaponsData>(u.SapperToolsLostJson ?? "{}", new JsonSerializerOptions()) ?? new(),
             SentryMinimumDefence = u.SentryMinimumDefence,
             SentryMaximumDefence = u.SentryMaximumDefence,
-            SentryToolsLost = JsonSerializer.Deserialize<UserWeaponsData>(u.SentryToolsLostJson ?? "{}", new JsonSerializerOptions()) ?? new()
+            SentryToolsLost = JsonSerializer.Deserialize<UserWeaponsData>(u.SentryToolsLostJson ?? "{}", new JsonSerializerOptions()) ?? new(),
+            SapperRecruitLosses = u.SapperRecruitLosses,
+            SapperSapperLosses = u.SapperSapperLosses,
+            SentryRecruitLosses = u.SentryRecruitLosses,
+            SentrySentryLosses = u.SentrySentryLosses
         });
     }
 
@@ -26,6 +31,7 @@ public static class ReportExtensions
     {
         return report.Select(u => new AfterActionReportViewModel()
         {
+            Id = u.Id,
             AggressorId = u.AggressorId,
             DefenderId = u.DefenderId,
             BattleTime = u.BattleTime,

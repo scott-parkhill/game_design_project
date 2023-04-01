@@ -8,20 +8,36 @@
         {
             <TabSection Title="Offensive Weapons">@GetWeaponsList(ActionTypes.Offence)</TabSection>
         }
+        else
+        {
+            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
+        }
         
         @if (Data.GetWeaponsByActionType(ActionTypes.Defence).Any())
         {
             <TabSection Title="Defensive Weapons">@GetWeaponsList(ActionTypes.Defence)</TabSection>
+        }
+        else
+        {
+            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
         }
         
         @if (Data.GetWeaponsByActionType(ActionTypes.Sentry).Any())
         {
             <TabSection Title="Sentry Weapons">@GetWeaponsList(ActionTypes.Sentry)</TabSection>
         }
+        else
+        {
+            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
+        }
         
         @if (Data.GetWeaponsByActionType(ActionTypes.Sapping).Any())
         {
             <TabSection Title="Sapper Weapons">@GetWeaponsList(ActionTypes.Sapping)</TabSection>
+        }
+        else
+        {
+            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
         }
     </TabContainer>
 

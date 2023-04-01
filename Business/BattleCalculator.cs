@@ -51,7 +51,7 @@ public class BattleCalculator{
     }
 
     //Method that returns the variance in the defence values after a sapping/recon operation is conducted
-    public ((double Min, double Max) DefenceRange, string Message) CalculateSapperOutcome(double sapperScore, double sentryScore, double defenceScore){
+    public ((double Min, double Max) DefenceRange, double Outcome, string Message) CalculateSapperOutcome(double sapperScore, double sentryScore, double defenceScore){
         double ratio = sapperScore / sentryScore;
         double min = 0, max = 0;
         string resultMessage = "";
@@ -97,6 +97,6 @@ public class BattleCalculator{
                 break;
         }
 
-        return ((min, max), resultMessage);
+        return ((min, max), ratio, resultMessage);
     }
 }

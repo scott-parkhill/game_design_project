@@ -11,6 +11,8 @@ public class SpyReport
 
     #region Sapper
     public double SapperStrength { get; set; }
+    public int SapperSapperLosses { get; set; }
+    public int SapperRecruitLosses { get; set; }
     public string SapperToolsLostJson { get; set; } = "{}";
     #endregion
 
@@ -18,6 +20,8 @@ public class SpyReport
     #region Sentry
     public double SentryMinimumDefence { get; set; }
     public double SentryMaximumDefence { get; set; }
+    public int SentrySentryLosses { get; set; }
+    public int SentryRecruitLosses { get; set; }
     public string SentryToolsLostJson { get; set; } = "{}";
     #endregion
 }

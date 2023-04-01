@@ -28,7 +28,11 @@ public partial class GameDbService : IGameDbService
             SapperToolsLostJson = JsonSerializer.Serialize(spyReport.SapperToolsLost),
             SentryMinimumDefence = spyReport.SentryMinimumDefence,
             SentryMaximumDefence = spyReport.SentryMaximumDefence,
-            SentryToolsLostJson = JsonSerializer.Serialize(spyReport.SentryToolsLost)
+            SentryToolsLostJson = JsonSerializer.Serialize(spyReport.SentryToolsLost),
+            SapperSapperLosses = spyReport.SapperSapperLosses,
+            SapperRecruitLosses = spyReport.SapperRecruitLosses,
+            SentryRecruitLosses = spyReport.SentryRecruitLosses,
+            SentrySentryLosses = spyReport.SentrySentryLosses
         };
 
         _context.Add(newReport);
@@ -47,7 +51,7 @@ public partial class GameDbService : IGameDbService
     
     public async Task<List<SpyReportViewModel>> GetSpyReports(string loggedUserId)
     {
-        return await _context.SpyReports.Where(u => u.SapperId == loggedUserId || u.SentryId == loggedUserId).ToViewModel().ToListAsync();
+        return await _context.SpyReports.Where(u => u.SapperId == loggedUserId || u.SentryId == loggedUserId).ToViewModel().OrderBy(u => u.SpyTime).ToListAsync();
     }
 
     public async Task<SpyReportViewModel?> GetSpyReport(int id)
@@ -96,7 +100,7 @@ public partial class GameDbService : IGameDbService
 
     public async Task<List<AfterActionReportViewModel>> GetAfterActionReports(string loggedUserId)
     {
-        return await _context.AfterActionReports.Where(u => u.AggressorId == loggedUserId || u.DefenderId == loggedUserId).ToViewModel().ToListAsync();
+        return await _context.AfterActionReports.Where(u => u.AggressorId == loggedUserId || u.DefenderId == loggedUserId).ToViewModel().OrderBy(u => u.BattleTime).ToListAsync();
     }
 
     public async Task<AfterActionReportViewModel?> GetAfterActionReport(int id)

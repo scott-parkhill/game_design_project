@@ -37,6 +37,27 @@ else
             </tr>
             </tbody>
         </table>
+        
+        <br />
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Sapper Sapper Losses</td>
+                    <td>Sapper Recruit Losses</td>
+                    <td>Sentry Sentry Losses</td>
+                    <td>Sentry Recruit Losses</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@spyReport.SapperSapperLosses</td>
+                    <td>@spyReport.SapperRecruitLosses</td>
+                    <td>@spyReport.SentrySentryLosses</td>
+                    <td>@spyReport.SentryRecruitLosses</td>
+                </tr>
+            </tbody>
+        </table>
     }
     else if (afterActionReport is not null)
     {   
@@ -81,20 +102,17 @@ else
         </table>
     }
     
-    @if (spyReport is not null && spyReport.SapperToolsLost.UserWeapons.Any() && spyReport.SentryToolsLost.UserWeapons.Any())
-    {
-        <br/>
-        <h3>Weapon Losses</h3>
-        <TabContainer>
-            <TabSection Title="Aggressor Weapon Losses">
-                <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SapperToolsLost : afterActionReport!.AggressorToolsLost)"></UserWeaponsDisplay>
-            </TabSection>
-            <TabSection Title="Defender Weapon Losses">
-                <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SentryToolsLost : afterActionReport!.DefenderToolsLost)"></UserWeaponsDisplay>
-            </TabSection>
-        </TabContainer>
-    }
-
+    <br/>
+    
+    <h3>Weapon Losses</h3>
+    <TabContainer>
+        <TabSection Title="Aggressor Weapon Losses">
+            <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SapperToolsLost : afterActionReport!.AggressorToolsLost)"></UserWeaponsDisplay>
+        </TabSection>
+        <TabSection Title="Defender Weapon Losses">
+            <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SentryToolsLost : afterActionReport!.DefenderToolsLost)"></UserWeaponsDisplay>
+        </TabSection>
+    </TabContainer>
 }
 
 @code

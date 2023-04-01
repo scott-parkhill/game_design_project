@@ -2,6 +2,7 @@ namespace Chaos.Models.ViewModels;
 
 public class AfterActionReportViewModel
 {
+    public int Id { get; set; }
     public string AggressorId { get; set; } = "";
     public string DefenderId { get; set; } = "";
     public DateTime BattleTime { get; set; }
