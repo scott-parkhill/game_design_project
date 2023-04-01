@@ -171,7 +171,9 @@ public class BattleManager
         foreach (var item in aggressorWeapons)
         {
             var newData = newAggressorWeapons.Where(u => u.WeaponType == item.WeaponType).First();
-            aggressorWeaponsData.UserWeapons.Add(new() { Count = item.Count - newData.Count, WeaponType = item.WeaponType });
+            UserWeapon newWeapon = new() { Count = item.Count - newData.Count, WeaponType = item.WeaponType };
+            if (newWeapon.Count > 0)
+                aggressorWeaponsData.UserWeapons.Add(newWeapon);
         }
 
         UserWeaponsData defenderWeaponsData = new();
@@ -179,7 +181,9 @@ public class BattleManager
         foreach (var item in defenderWeapons)
         {
             var newData = newDefenderWeapons.Where(u => u.WeaponType == item.WeaponType).First();
-            defenderWeaponsData.UserWeapons.Add(new() { Count = item.Count - newData.Count, WeaponType = item.WeaponType });
+            UserWeapon newWeapon = new() { Count = item.Count - newData.Count, WeaponType = item.WeaponType };
+            if (newWeapon.Count > 0)
+                defenderWeaponsData.UserWeapons.Add(newWeapon);
         }
 
         AfterActionReportViewModel viewModel = new()

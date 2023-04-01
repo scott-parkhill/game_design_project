@@ -23,40 +23,108 @@
 <EditForm Model="model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
 
-    <div class="form-group">
-        <label>Email</label>
-        <InputText class="form-control" @bind-Value="model.Email" />
-        <ValidationMessage For="() => model.Email" />
-    </div>
+    @if (onFirstPage)
+    {
+        <div class="form-group">
+            <label>Email</label>
+            <InputText class="form-control" @bind-Value="model.Email" />
+            <ValidationMessage For="() => model.Email" />
+        </div>
 
-    <div class="form-group mt-2">
-        <label>Username</label>
-        <InputText class="form-control" @bind-Value="model.Username" />
-        <ValidationMessage For="() => model.Username" />
-    </div>
+        <div class="form-group mt-2">
+            <label>Username</label>
+            <InputText class="form-control" @bind-Value="model.Username" />
+            <ValidationMessage For="() => model.Username" />
+        </div>
 
-    <div class="form-group mt-2">
-        <label>Password</label>
-        <InputText class="form-control" type="password" @bind-Value="model.Password" />
-        <ValidationMessage For="() => model.Password" />
-    </div>
+        <div class="form-group mt-2">
+            <label>Password</label>
+            <InputText class="form-control" type="password" @bind-Value="model.Password" />
+            <ValidationMessage For="() => model.Password" />
+        </div>
+        
+        <button type="button" class="btn btn-info mt-3" @onclick="Next">Next</button>
+    }
     
-    <label class="mt-2">Faction</label>
-    <InputSelect class="form-select" @bind-Value="model.Faction">
-        @foreach (var faction in Enum.GetValues<Factions>())
-        {
-            <option @key="faction" value="@faction">@(Enum.GetName<Factions>(faction))</option>
-        }
-    </InputSelect>
-    <ValidationMessage For="() => model.Faction" />
+    else if (onFactionPage)
+    {
+        <h3>Faction</h3>
+        
+        <div class="container">
+            <div class="col-6">
+                <InputSelect class="form-select" @bind-Value="model.Faction">
+                    @foreach (var faction in Enum.GetValues<Factions>())
+                    {
+                        <option @key="faction" value="@faction">@(Enum.GetName<Factions>(faction))</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => model.Faction"/>
+            </div>
+            <div class="col-2">
+                <button class="btn btn-success mt-3" type="submit">Register</button>
+                <button class="btn btn-info mt-3 ms-1" type="button" @onclick="Back">Back</button>
+            </div>
+        </div>
+        
+        <br />
+        
+        <CardDeck Width="25rem">
+            <Card Image="dolphin.png">
+                <Title>Dolphins</Title>
+                <Text>
+                    Dolphins are a luscious species of aquatic mammal. They frolick in all the world's oceans, and are generally happy-go-lucky creatures.
+                    <br /><br />
+                    That is, until the pirates attacked...
+                    <br /><br />
+                    Since then, humans have begun to understand the true intelligence of dolphins, and their ability to match vicious act with horrendous act. Are you a dolphin?
+                    <br /><br />
+                    Dolphin Perks:
+                    <ul>
+                        <li>increased recruit rate</li>
+                        <li>increased spy/sabotage and sentry skills</li>
+                    </ul>
+                </Text>
+            </Card>
+            <Card Image="pirate.png">
+                <Title>Pirates</Title>
+                <Text>
+                    Pirates are a notorious bunch of folk, known for their volunteer work when it comes to harrassing the Royal Navy. Putting their lives at risk for the greater good, they were the single greatest anti-colonial threat to Spanish and English expansion on the seas.
+                    <br /><br />
+                    Pirates, however, while known for their wit are not known for their intelligence, and one day they decided, "hey, those funny swimming fuckers in the ocean there, let's merc them". And so they did. What they didn't realize is they were about to start the first and greatest interspecies war ever ever.
+                    <br /><br />
+                    Are you a pirate?
+                    <br /><br />
+                    Pirate Perks:
+                    <ul>
+                        <li>increased coin generation rate</li>
+                        <li>increased attack and defence skills</li>
+                    </ul>
+                </Text>
+            </Card>
+        </CardDeck>
 
-    <button class="btn btn-primary mt-3" type="submit">Register</button>
+    }
 
 </EditForm>
 
 @code
 {
     RegistrationModel model = new();
+
+    bool onFirstPage = true;
+    bool onFactionPage;
+
+    void Back()
+    {
+        onFirstPage = true;
+        onFactionPage = false;
+    }
+
+    void Next()
+    {
+        onFirstPage = false;
+        onFactionPage = true;
+    }
 
     async Task OnValidSubmit()
     {

@@ -54,6 +54,7 @@ builder.Services.AddBlazoredToast();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<GameUser>>();
 builder.Services.AddScoped<IGameDbService, GameDbService>();
+builder.Services.AddScoped<BattleCalculator>();
 builder.Services.AddScoped<BattleManager>();
 
 #endregion

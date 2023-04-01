@@ -10,6 +10,7 @@ namespace Chaos.Services.GameDbService;
 
 public partial class GameDbService : IGameDbService
 {
+    #region Spy Reports
     public async Task<DbResult> CreateSpyReport(SpyReportViewModel spyReport)
     {
         if (!(await _context.GameUsers.AnyAsync(u => u.Id == spyReport.SapperId)))
@@ -49,6 +50,14 @@ public partial class GameDbService : IGameDbService
         return await _context.SpyReports.Where(u => u.SapperId == loggedUserId || u.SentryId == loggedUserId).ToViewModel().ToListAsync();
     }
 
+    public async Task<SpyReportViewModel?> GetSpyReport(int id)
+    {
+        return await _context.SpyReports.Where(u => u.Id == id).ToViewModel().FirstOrDefaultAsync();
+    }
+
+    #endregion
+
+    #region After Action Reports
     public async Task<DbResult> CreateAfterActionReport(AfterActionReportViewModel afterActionReport)
     {
         if (!(await _context.GameUsers.AnyAsync(u => u.Id == afterActionReport.AggressorId)))
@@ -89,4 +98,11 @@ public partial class GameDbService : IGameDbService
     {
         return await _context.AfterActionReports.Where(u => u.AggressorId == loggedUserId || u.DefenderId == loggedUserId).ToViewModel().ToListAsync();
     }
+
+    public async Task<AfterActionReportViewModel?> GetAfterActionReport(int id)
+    {
+        return await _context.AfterActionReports.Where(u => u.Id == id).ToViewModel().FirstOrDefaultAsync();
+    }
+
+    #endregion
 }

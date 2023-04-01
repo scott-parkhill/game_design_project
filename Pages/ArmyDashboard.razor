@@ -30,6 +30,7 @@ else
                         <th scope="col">Coin</th>
                         <th scope="col">Coin Generation Rate</th>
                         <th scope="col">Recruitment Rate</th>
+                        <th scope="col">Overall Army Strength</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +38,7 @@ else
                         <td>@userArmy.Coins</td>
                         <td>@userArmy.CoinGenerationRate per day</td>
                         <td>@userArmy.RecruitRate per day</td>
+                        <td>@ArmyScore.GetArmyScore(userArmy)</td>
                     </tr>
                 </tbody>
             </table>

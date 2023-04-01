@@ -8,6 +8,7 @@
 @code
 {
     [CascadingParameter(Name = "CardDeck")] CardDeck? Deck { get; set; }
+    [CascadingParameter(Name = "Width")] public string? Width { get; set; }
     [Parameter] public bool Render { get; set; }
     [Parameter] public string? Image { get; set; }
     [Parameter] public string? Alt { get; set; }
@@ -23,7 +24,9 @@
     {
         // TODO Change this inline style and make the widths work up to a max and move to SCSS.
         <div class="card" style="width: auto;">
-            <img src="@($"/images/{Image}")" class="card-img-top" alt="@Alt">
+            @* <div class="d-flex align-items-center"> *@
+                <img src="@($"/images/{Image}")" style="@(Width is null ? "" : $"width:{Width}; margin-left:auto;margin-right:auto")" class="card-img-top" alt="@Alt">
+            @* </div> *@
             <div class="card-body">
                 <h5 class="card-title">@Title</h5>
                 <p class="card-text">@Text</p>

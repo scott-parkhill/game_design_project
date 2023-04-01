@@ -1,5 +1,7 @@
 <CascadingValue Value="this" Name="CardDeck">
-    @ChildContent
+    <CascadingValue Value="Width" Name="Width">
+        @ChildContent
+    </CascadingValue>
 </CascadingValue>
 
 <div class="container">
@@ -15,6 +17,7 @@
 
 @code
 {
+    [Parameter] public string? Width { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     List<Card> cards = new();

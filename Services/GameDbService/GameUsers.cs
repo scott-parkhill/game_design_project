@@ -16,4 +16,15 @@ public partial class GameDbService : IGameDbService
 
         return user.Faction;
     }
+
+    public async Task<(string, string)> GetBelligerents(string aggressorId, string defenderId)
+    {
+        var aggressor = await _context.GameUsers.Where(u => u.Id == aggressorId).Select(u => u.UserName).FirstOrDefaultAsync();
+        var defender = await _context.GameUsers.Where(u => u.Id == defenderId).Select(u => u.UserName).FirstOrDefaultAsync();
+
+        if (aggressor is null || defender is null)
+            throw new ArgumentException("One of the users doesn't exist in the database.");
+
+        return (aggressor, defender);
+    }
 }

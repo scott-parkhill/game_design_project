@@ -36,6 +36,9 @@ public interface IGameDbService
     
     /// <summary> Get the faction for a given user. </summary>
     Task<Factions> GetUserFaction(string loggedUserId);
+
+    /// <summary> Get the belligerents. </summary>
+    Task<(string, string)> GetBelligerents(string aggressorId, string defenderId);
     #endregion
 
 
@@ -47,11 +50,17 @@ public interface IGameDbService
     /// <summary> Get all spy reports associated with a given user. </summary>
     Task<List<SpyReportViewModel>> GetSpyReports(string loggedUserId);
 
+    /// <summary> Get a spy report view model by Id. </summary>
+    Task<SpyReportViewModel?> GetSpyReport(int id);
+
     /// <summary> Create a new after action report. </summary>
     Task<DbResult> CreateAfterActionReport(AfterActionReportViewModel afterActionReport);
 
     /// <summary> Get all after action reports associated with a given user. </summary>
     Task<List<AfterActionReportViewModel>> GetAfterActionReports(string loggedUserId);
+
+    /// <summary> Get an after action report view model by Id. </summary>
+    Task<AfterActionReportViewModel?> GetAfterActionReport(int id);
 
     #endregion
 }
