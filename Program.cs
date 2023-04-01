@@ -56,6 +56,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddScoped<IGameDbService, GameDbService>();
 builder.Services.AddScoped<BattleCalculator>();
 builder.Services.AddScoped<BattleManager>();
+builder.Services.AddHostedService<ArmyUpdaterService>();
 
 #endregion
 

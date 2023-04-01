@@ -22,6 +22,20 @@ public partial class GameDbService : IGameDbService
             Recruits = 20,
             UserWeaponsJsonData = "{}"
         };
+        
+        var faction = await GetUserFaction(loggedUserId);
+
+        switch (faction)
+        {
+            case Factions.None:
+                return new(TaskResults.Invalid, "User doesn't exist in the database.");
+            case Factions.Dolphins:
+                army.RecruitRate = 12;
+                break;
+            case Factions.Pirates:
+                army.CoinGenerationRate = 120;
+                break;
+        }
 
         await _context.AddAsync(army);
 

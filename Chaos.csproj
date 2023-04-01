@@ -24,4 +24,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\LandingPages\LoginPage.razor" />
+    <AdditionalFiles Include="Pages\LandingPages\NotAuthorizedPage.razor" />
+    <AdditionalFiles Include="Pages\LandingPages\NotFoundPage.razor" />
+    <AdditionalFiles Include="Pages\LandingPages\Registration.razor" />
+  </ItemGroup>
+
 </Project>
