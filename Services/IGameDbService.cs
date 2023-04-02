@@ -61,6 +61,9 @@ public interface IGameDbService
 
     /// <summary> Get an after action report view model by Id. </summary>
     Task<AfterActionReportViewModel?> GetAfterActionReport(int id);
+    
+    /// <summary> Get the hiscores. </summary>
+    Task<List<(string Username, double ArmyScore, int Coins, Factions Faction)>> GetHiscores();
 
     #endregion
 }

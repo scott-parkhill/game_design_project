@@ -14,6 +14,9 @@ public class ArmyUpdaterService : IHostedService
     // 10 minutes in milliseconds.
     System.Timers.Timer _timer = new(600_000);
     
+    // For testing only lol.
+    // System.Timers.Timer _timer = new(1000);
+    
     public ArmyUpdaterService(IDbContextFactory<GameDbContext> dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;

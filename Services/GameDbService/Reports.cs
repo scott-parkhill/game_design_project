@@ -109,4 +109,17 @@ public partial class GameDbService : IGameDbService
     }
 
     #endregion
+    
+    #region Hiscores
+
+    public async Task<List<(string Username, double ArmyScore, int Coins, Factions Faction)>> GetHiscores()
+    {
+        var armies = await _context.Armies.ToViewModel().ToListAsync();
+        var usernames = await _context.GameUsers.ToDictionaryAsync(u => u.Id, v => v.UserName);
+        var userFactions = await _context.GameUsers.ToDictionaryAsync(u => u.Id, v => v.Faction);
+
+        return armies.Select(u => (usernames[u.UserId], ArmyScore: ArmyScore.GetArmyScore(u, userFactions[u.UserId]), u.Coins, userFactions[u.UserId])).OrderBy(u => u.ArmyScore).ToList();
+    }
+    
+    #endregion
 }

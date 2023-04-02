@@ -11,6 +11,7 @@ public static class ArmyExtensions
     {
         return army.Select(u => new ArmyViewModel()
         {
+            UserId = u.UserId,
             RecruitRate = u.RecruitRate,
             LastRecruitment = u.LastRecruitment,
             Coins = u.Coins,

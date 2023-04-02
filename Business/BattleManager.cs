@@ -31,8 +31,8 @@ public class BattleManager
         var defenderOriginalRecruits = defenderArmy.Recruits;
         var defenderOriginalDefenders = defenderArmy.Defenders;
         
-        var aggressorScore = ArmyScore.GetArmyScores(aggressorArmy, await _dbService.GetUserFaction(aggressorId))[(int)ActionTypes.Offence];
-        var defenderScore = ArmyScore.GetArmyScores(defenderArmy, await _dbService.GetUserFaction(defenderId))[(int)ActionTypes.Defence];
+        var aggressorScore = ArmyScore.GetOffensiveScore(aggressorArmy, await _dbService.GetUserFaction(aggressorId));
+        var defenderScore = ArmyScore.GetDefensiveScore(defenderArmy, await _dbService.GetUserFaction(defenderId));
 
         var outcome = _battleCalculator.CalculateBattleOutcome(aggressorScore, defenderScore);
         #endregion
@@ -224,10 +224,9 @@ public class BattleManager
         var defenderOriginalSentries = defenderArmy.Sentries;
         var defenderOriginalRecruits = defenderArmy.Recruits;
 
-        var aggressorScore = ArmyScore.GetArmyScores(aggressorArmy, await _dbService.GetUserFaction(aggressorId))[(int)ActionTypes.Sapping];
-        var defenderScores = ArmyScore.GetArmyScores(defenderArmy, await _dbService.GetUserFaction(defenderId));
-        var defenderScore = defenderScores[(int)ActionTypes.Sentry];
-        var defenderDefenceScore = defenderScores[(int)ActionTypes.Defence];
+        var aggressorScore = ArmyScore.GetSapperScore(aggressorArmy, await _dbService.GetUserFaction(aggressorId));
+        var defenderScore = ArmyScore.GetSentryScore(defenderArmy, await _dbService.GetUserFaction(defenderId));
+        var defenderDefenceScore = ArmyScore.GetDefensiveScore(defenderArmy, await _dbService.GetUserFaction(defenderId));
 
         var outcome = _battleCalculator.CalculateSapperOutcome(aggressorScore, defenderScore, defenderDefenceScore);
         #endregion
@@ -366,12 +365,11 @@ public class BattleManager
         defenderArmy = await _dbService.GetArmyViewModel(defenderId);
         
         if (aggressorArmy is null || defenderArmy is null)
-                    throw new ArgumentException("Either the aggressor or defender does not have an army in the database.");
+            throw new ArgumentException("Either the aggressor or defender does not have an army in the database.");
         
-        aggressorScore = ArmyScore.GetArmyScores(aggressorArmy, await _dbService.GetUserFaction(aggressorId))[(int)ActionTypes.Sapping];
-        defenderScores = ArmyScore.GetArmyScores(defenderArmy, await _dbService.GetUserFaction(defenderId));
-        defenderScore = defenderScores[(int)ActionTypes.Sentry];
-        defenderDefenceScore = defenderScores[(int)ActionTypes.Defence];
+        aggressorScore = ArmyScore.GetSapperScore(aggressorArmy, await _dbService.GetUserFaction(aggressorId));
+        defenderScore = ArmyScore.GetSentryScore(defenderArmy, await _dbService.GetUserFaction(defenderId));
+        defenderDefenceScore = ArmyScore.GetDefensiveScore(defenderArmy, await _dbService.GetUserFaction(defenderId));
         
         outcome = _battleCalculator.CalculateSapperOutcome(aggressorScore, defenderScore, defenderDefenceScore);
 

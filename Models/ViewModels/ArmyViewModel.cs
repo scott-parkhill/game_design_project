@@ -3,6 +3,7 @@ namespace Chaos.Models.ViewModels;
 public class ArmyViewModel
 {
     #region ArmyAdministration
+    public string UserId { get; set; }
     public int RecruitRate { get; set; } = -1;
     public DateTime LastRecruitment { get; set; } = DateTime.UnixEpoch;
     public int Coins { get; set; } = -1;

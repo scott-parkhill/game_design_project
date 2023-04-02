@@ -1,0 +1,153 @@
+@page "/battle-centre"
+@attribute [Authorize(Roles = "StandardUser")]
+
+@using Chaos.Business
+@using Chaos.Models.ViewModels
+
+@inject IGameDbService dbService
+@inject BattleManager BattleManager
+
+@if (loading)
+{
+    <h1>Loading...</h1>
+}
+else if (error)
+{
+    <h1>Error.</h1>
+}
+else
+{
+    <h1>Battle Centre</h1>
+    
+    @if (step1)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Username</td>
+                <td>Faction</td>
+                <td>Army Score</td>
+                <td>Currency Available</td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var score in hiscores)
+            {
+                <tr>
+                    <td>@score.Username</td>
+                    <td>@(score.Faction is Factions.Dolphins ? "Dolphin" : "Pirate")</td>
+                    <td>@score.ArmyScore</td>
+                    <td>@score.Coins</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else if (step2)
+    {
+        <h3>Confirm Attack or Spy Action</h3>
+        
+        <p>Please confirm your attack or spy action against @selectedUsername.</p>
+        
+        <br />
+        <button type="button" class="btn btn-danger" @onclick="Battle">Attack</button>
+        <button type="button" class="btn btn-warning" @onclick="Sap">Spy/Sabotage</button>
+        <button type="button" class="btn btn-success" @onclick="Back">Back</button>
+    }
+    else if (step3)
+    {
+        if (spyReport is not null)
+        {
+            <h3>@outcome</h3>
+            
+            <ActionReportViewer ReportId="spyReport.Id" ReportType="ReportTypes.SpyReport" />
+            <br />
+            <button type="button" class="btn btn-primary" @onclick="Back">Back to Battle Centre Home</button>
+        }
+        else if (actionReport is not null)
+        {
+            <h3>@outcome</h3>
+            
+            <ActionReportViewer ReportId="actionReport.Id" ReportType="ReportTypes.AfterActionReport" />
+             
+            <br />
+            <button type="button" class="btn btn-primary" @onclick="Back">Back to Battle Centre Home</button>
+        }
+        else
+        {
+            <h3>You shouldn't be here...</h3>
+        }
+    }
+}
+
+
+@code
+{
+    [CascadingParameter(Name = "LoggedUserId")] string LoggedUserId { get; set; } = null!;
+    [CascadingParameter(Name = "Username")] string Username { get; set; } = null!;
+
+    List<(string Username, double ArmyScore, int Coins, Factions Faction)> hiscores = new();
+    bool loading = true;
+    bool error;
+    bool step1 = true;
+    bool step2;
+    bool step3;
+    string selectedUsername = "";
+    string outcome = "";
+    AfterActionReportViewModel? actionReport;
+    SpyReportViewModel? spyReport;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hiscores = await dbService.GetHiscores();
+        
+        if (hiscores.Count == 0)
+        {
+            error = true;
+            return;
+        }
+        
+        loading = false;
+    }
+
+    void Back()
+    {
+        loading = true;
+        step2 = step3 = false;
+        step1 = true;
+        loading = false;
+    }
+
+    void MoveToAttackScreen(string username)
+    {
+        loading = true;
+        selectedUsername = username;
+        step1 = step3 = false;
+        step2 = true;
+        loading = false;
+    }
+
+    async Task Battle()
+    {
+        loading = true;
+        var (_, defenderId) = await dbService.GetBelligerents(Username, selectedUsername);
+        (outcome, actionReport) = await BattleManager.AttackUser(LoggedUserId, defenderId);
+        spyReport = null;
+        step1 = step2 = false;
+        step3 = true;
+        loading = false;
+    }
+    
+    async Task Sap()
+    {
+        loading = true;
+        var (_, defenderId) = await dbService.GetBelligerents(Username, selectedUsername);
+        (outcome, spyReport) = await BattleManager.SapUser(LoggedUserId, defenderId);
+        actionReport = null;
+        step1 = step2 = false;
+        step3 = true;
+        loading = false;
+    }
+    
+}
+

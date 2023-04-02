@@ -38,7 +38,7 @@ else
                     <td>@userArmy.Coins</td>
                     <td>@userArmy.CoinGenerationRate per day</td>
                     <td>@userArmy.RecruitRate per day</td>
-                    <td>@ArmyScore.GetArmyScore(userArmy, userFaction)</td>
+                    <td>@((int)ArmyScore.GetArmyScore(userArmy, userFaction))</td>
                 </tr>
                 </tbody>
             </table>
@@ -75,11 +75,20 @@ else
                 <InputNumber class="form-control" @bind-Value="trainingModel.Defenders" />
                 <ValidationMessage For="() => trainingModel.Defenders" />
                 <br />
+                New Sappers:
+                <InputNumber class="form-control" @bind-Value="trainingModel.Sappers" />
+                <ValidationMessage For="() => trainingModel.Sappers" />
+                <br />
+                New Sentries:
+                <InputNumber class="form-control" @bind-Value="trainingModel.Sentries" />
+                <ValidationMessage For="() => trainingModel.Sentries" />
+                <br />
                 <button type="submit" class="btn btn-primary">Submit</button>
             </EditForm>
 
         </TabSection>
-        <TabSection Title="After Action Reports" @onclick="StopShowingReport">
+        <TabSection Title="After Action Reports">
+            @{ StopShowingReport(); }
             @if (!showingReport)
             {
                 <table class="table">
@@ -104,10 +113,11 @@ else
             }
             else
             {
-                <ActionReportViewer ReportId="reportId" />
+                <ActionReportViewer ReportId="reportId"/>
             }
         </TabSection>
-        <TabSection Title="Spy Reports" @onclick="() => showingReport = false">
+        <TabSection Title="Spy Reports">
+            @{ StopShowingReport(); }
             @if (!showingReport)
             {
                 <table class="table">
@@ -132,7 +142,7 @@ else
             }
             else
             {
-                <ActionReportViewer ReportId="reportId" />
+                <ActionReportViewer ReportId="reportId"/>
             }
         </TabSection>
     </TabContainer>
@@ -203,9 +213,9 @@ else
 
     async Task SaveArmyChanges()
     {
-        var (result, message) = await dbService.TrainRecruits(LoggedUserId, trainingModel.Attackers, trainingModel.Defenders, 0, 0);
+        var (result, message) = await dbService.TrainRecruits(LoggedUserId, trainingModel.Attackers, trainingModel.Defenders, trainingModel.Sentries, trainingModel.Sappers);
 
-        if (result is TaskResults.Success)
+        if (result is TaskResults.Failure)
         {
             toastService.ShowError(message);
         }
@@ -218,6 +228,7 @@ else
             toastService.ShowSuccess(message);
             userArmy = await dbService.GetArmyViewModel(LoggedUserId!) ?? new();
             trainingModel = new();
+            StateHasChanged();
         }
     }
 
@@ -228,5 +239,11 @@ else
 
         [RequiredNotNegative(ErrorMessage = "Can't recruit negative defenders.")]
         public int Defenders { get; set; }
+        
+        [RequiredNotNegative(ErrorMessage = "Can't recruit negative sappers.")]
+        public int Sappers { get; set; }
+        
+        [RequiredNotNegative(ErrorMessage = "Can't recruit negative sentries.")]
+        public int Sentries { get; set; }
     }
 }

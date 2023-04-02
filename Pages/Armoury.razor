@@ -71,8 +71,8 @@ else
     List<WeaponPurchaseModel> weaponsPurchaseModel = new();
     Factions userFaction = Factions.None;
     ArmyViewModel armyViewModel = new();
-    double currentArmyScore => ArmyScore.GetArmyScore(armyViewModel, userFaction);
-    double newArmyScore;
+    int currentArmyScore => (int)ArmyScore.GetArmyScore(armyViewModel, userFaction);
+    int newArmyScore;
     int newArmyCoins;
     bool loading = true;
     bool error;
@@ -121,7 +121,7 @@ else
         ArmyViewModel newArmyView = armyViewModel.Clone();
         newArmyView.UserWeapons = newUserWeaponsData; 
 
-        newArmyScore = ArmyScore.GetArmyScore(newArmyView, userFaction);
+        newArmyScore = (int)ArmyScore.GetArmyScore(newArmyView, userFaction);
         newArmyCoins = armyViewModel.Coins - costs;
     }
 
