@@ -23,7 +23,8 @@ public static class ReportExtensions
             SapperRecruitLosses = u.SapperRecruitLosses,
             SapperSapperLosses = u.SapperSapperLosses,
             SentryRecruitLosses = u.SentryRecruitLosses,
-            SentrySentryLosses = u.SentrySentryLosses
+            SentrySentryLosses = u.SentrySentryLosses,
+            Outcome = u.Outcome
         });
     }
 
@@ -41,7 +42,8 @@ public static class ReportExtensions
             DefenderCoinLosses = u.DefenderCoinLosses,
             DefenderRecruitLosses = u.DefenderRecruitLosses,
             DefenderDefenderLosses = u.DefenderDefenderLosses,
-            DefenderToolsLost = JsonSerializer.Deserialize<UserWeaponsData>(u.DefenderToolsLostJson ?? "{}", new JsonSerializerOptions()) ?? new()
+            DefenderToolsLost = JsonSerializer.Deserialize<UserWeaponsData>(u.DefenderToolsLostJson ?? "{}", new JsonSerializerOptions()) ?? new(),
+            Outcome = u.Outcome
         });
     }
 }

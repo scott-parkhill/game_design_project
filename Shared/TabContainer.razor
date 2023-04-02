@@ -34,5 +34,9 @@
         StateHasChanged();
     }
 
-    void SetActiveTab(TabSection tab) => activeTab = tab;
+    async Task SetActiveTab(TabSection tab)
+    {
+        activeTab = tab;
+        await tab.OnClicked.InvokeAsync();
+    }
 }

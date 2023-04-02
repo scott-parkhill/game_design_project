@@ -21,6 +21,7 @@ else
                 <td>Time of Action</td>
                 <td>Sapper Name</td>
                 <td>Sentry Name</td>
+                <td>Outcome</td>
                 <td>Sapper Strength</td>
                 <td>Sentry Minimum Defence</td>
                 <td>Sentry Maximum Defence</td>
@@ -28,12 +29,21 @@ else
             </thead>
             <tbody>
             <tr>
-                <td>@($"{spyReport.SpyTime.ToShortDateString()} {spyReport.SpyTime.ToShortTimeString()}")</td>
+                <td>@($"{spyReport.SpyTime.ToShortDateString()} {spyReport.SpyTime.ToShortTimeString()} UTC")</td>
                 <td>@aggressorName</td>
                 <td>@defenderName</td>
+                <td>@spyReport.Outcome</td>
                 <td>@spyReport.SapperStrength</td>
-                <td>@spyReport.SentryMinimumDefence</td>
-                <td>@spyReport.SentryMaximumDefence</td>
+                @if (spyReport.SentryMaximumDefence == 0 && spyReport.SentryMinimumDefence == 0)
+                {
+                    <td>N/A</td>
+                    <td>N/A</td>
+                }
+                else
+                {
+                    <td>@spyReport.SentryMinimumDefence</td>
+                    <td>@spyReport.SentryMaximumDefence</td>
+                }
             </tr>
             </tbody>
         </table>
@@ -68,14 +78,16 @@ else
                     <td>Aggressor Name</td>
                     <td>Defender Name</td>
                     <td>@currencyName Stolen</td>
+                    <td>Outcome</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>@("${afterActionReport.BattleTime.ToShortDateString()} {afterActionReport.BattleTime.ToShortTimeString()}")</td>
+                    <td>@($"{afterActionReport.BattleTime.ToShortDateString()} {afterActionReport.BattleTime.ToShortTimeString()} UTC")</td>
                     <td>@aggressorName</td>
                     <td>@defenderName</td>
                     <td>@afterActionReport.AggressorCoinGains</td>
+                    <td>@afterActionReport.Outcome</td>
                 </tr>
             </tbody>
         </table>
@@ -107,10 +119,10 @@ else
     <h3>Weapon Losses</h3>
     <TabContainer>
         <TabSection Title="Aggressor Weapon Losses">
-            <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SapperToolsLost : afterActionReport!.AggressorToolsLost)"></UserWeaponsDisplay>
+            <UserWeaponsDisplay UserId="@(spyReport != null ? spyReport.SapperId : afterActionReport!.AggressorId)" ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SapperToolsLost : afterActionReport!.AggressorToolsLost)"></UserWeaponsDisplay>
         </TabSection>
         <TabSection Title="Defender Weapon Losses">
-            <UserWeaponsDisplay ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SentryToolsLost : afterActionReport!.DefenderToolsLost)"></UserWeaponsDisplay>
+            <UserWeaponsDisplay UserId="@(spyReport != null ? spyReport.SentryId : afterActionReport!.DefenderId)" ShowAsWeaponsLost Data="@(spyReport != null ? spyReport.SentryToolsLost : afterActionReport!.DefenderToolsLost)"></UserWeaponsDisplay>
         </TabSection>
     </TabContainer>
 }
@@ -140,6 +152,7 @@ else
                 afterActionReport = await dbService.GetAfterActionReport(ReportId);
                 if (afterActionReport is null)
                 {
+                    loading = false;
                     error = true;
                     return;
                 }
@@ -150,12 +163,14 @@ else
                 spyReport = await dbService.GetSpyReport(ReportId);
                 if (spyReport is null)
                 {
+                    loading = false;
                     error = true;
                     return;
                 }
                 (aggressorName, defenderName) = await dbService.GetBelligerents(spyReport.SapperId, spyReport.SentryId);
                 break;
             default:
+                loading = false;
                 error = true;
                 return;
         }

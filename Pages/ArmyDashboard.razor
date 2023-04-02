@@ -87,8 +87,7 @@ else
             </EditForm>
 
         </TabSection>
-        <TabSection Title="After Action Reports">
-            @{ StopShowingReport(); }
+        <TabSection Title="After Action Reports" OnClicked="StopShowingReport">
             @if (!showingReport)
             {
                 <table class="table">
@@ -97,27 +96,42 @@ else
                         <td>Battle Time</td>
                         <td>Aggressor Name</td>
                         <td>Defender Name</td>
+                        <td>Outcome</td>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach (var report in afterActionReports)
+                    @if (afterActionReports.Count == 0)
                     {
-                        <tr style="cursor:pointer" @onclick="() => ShowReport(report)">
-                            <td>@($"{report.BattleTime.ToShortDateString()} {report.BattleTime.ToShortTimeString()}")</td>
-                            <td>@aggressor</td>
-                            <td>@defender</td>
+                        <tr>
+                            <td>No reports.</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
                         </tr>
+                    }
+                    else
+                    {
+                        @foreach (var report in afterActionReports)
+                        {
+                            <tr @key="report" style="cursor:pointer" @onclick="() => ShowReport(report)">
+                                <td>@($"{report.BattleTime.ToShortDateString()} {report.BattleTime.ToShortTimeString()} UTC")</td>
+                                <td>@aggressor</td>
+                                <td>@defender</td>
+                                <td>@report.Outcome</td>
+                            </tr>
+                        }
                     }
                     </tbody>
                 </table>
             }
             else
             {
-                <ActionReportViewer ReportId="reportId"/>
+                <br />
+                <button class="btn btn-info" @onclick="StopShowingReport">Back</button>
+                <ActionReportViewer ReportId="reportId" ReportType="ReportTypes.AfterActionReport" />
             }
         </TabSection>
-        <TabSection Title="Spy Reports">
-            @{ StopShowingReport(); }
+        <TabSection Title="Spy Reports" OnClicked="StopShowingReport">
             @if (!showingReport)
             {
                 <table class="table">
@@ -126,23 +140,39 @@ else
                         <td>Battle Time</td>
                         <td>Sapper Name</td>
                         <td>Sentry Name</td>
+                        <td>Outcome</td>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach (var report in spyReports)
+                    @if (spyReports.Count == 0)
                     {
-                        <tr @key="report" style="cursor:pointer" @onclick="() => ShowReport(report)">
-                            <td>@($"{report.SpyTime.ToShortDateString()} {report.SpyTime.ToShortTimeString()}")</td>
-                            <td>@aggressor</td>
-                            <td>@defender</td>
+                        <tr>
+                            <td>No reports.</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
                         </tr>
+                    }
+                    else
+                    {
+                        @foreach (var report in spyReports)
+                        {
+                            <tr @key="report" style="cursor:pointer" @onclick="() => ShowReport(report)">
+                                <td>@($"{report.SpyTime.ToShortDateString()} {report.SpyTime.ToShortTimeString()} UTC")</td>
+                                <td>@aggressor</td>
+                                <td>@defender</td>
+                                <td>@report.Outcome</td>
+                            </tr>
+                        }
                     }
                     </tbody>
                 </table>
             }
             else
             {
-                <ActionReportViewer ReportId="reportId"/>
+                <br />
+                <button class="btn btn-info" @onclick="StopShowingReport">Back</button>
+                <ActionReportViewer ReportId="reportId" ReportType="ReportTypes.SpyReport" />
             }
         </TabSection>
     </TabContainer>

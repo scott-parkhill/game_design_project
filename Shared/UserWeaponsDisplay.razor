@@ -1,5 +1,7 @@
 @using Chaos.Models;
 @using Chaos.Business
+@using System.ComponentModel
+@inject IGameDbService dbService
 
 @if (Data is not null)
 {
@@ -54,7 +56,15 @@
 @code
 {
     [Parameter, EditorRequired] public UserWeaponsData? Data { get; set; }
+    [Parameter, EditorRequired] public string UserId { get; set; } = null!;
     [Parameter] public bool ShowAsWeaponsLost { get; set; }
+
+    Factions faction;
+
+    protected override async Task OnInitializedAsync()
+    {
+        faction = await dbService.GetUserFaction(UserId);
+    }
 
     RenderFragment GetWeaponsList(ActionTypes actionType)
     {
@@ -71,7 +81,7 @@
                         @foreach (var weapon in Data!.GetWeaponsByActionType(actionType))
                         {
                             <tr>
-                                <td>@Weapon.Weapons[weapon.WeaponType].Name</td>
+                                <td>@(faction is Factions.Pirates ? Weapon.Weapons[weapon.WeaponType].Name : Weapon.Weapons[weapon.WeaponType].DolphinName)</td>
                                 <td>@weapon.Count</td>
                             </tr>
                         }

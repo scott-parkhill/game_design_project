@@ -102,8 +102,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await GetHiscores();
+    }
+
+    async Task GetHiscores()
+    {
         hiscores = await dbService.GetHiscores();
-        
+                
         if (hiscores.Count == 0)
         {
             error = true;
@@ -140,6 +145,7 @@ else
         spyReport = null;
         step1 = step2 = false;
         step3 = true;
+        await GetHiscores();
         loading = false;
     }
     
@@ -151,6 +157,7 @@ else
         actionReport = null;
         step1 = step2 = false;
         step3 = true;
+        await GetHiscores();
         loading = false;
     }
     

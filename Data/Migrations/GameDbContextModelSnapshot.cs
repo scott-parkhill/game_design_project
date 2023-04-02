@@ -19,14 +19,15 @@ namespace Chaos.Data.Migrations
 
             modelBuilder.Entity("Chaos.Models.DbModels.AfterActionReport", b =>
                 {
-                    b.Property<string>("AggressorId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DefenderId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("AggressorAttackerLosses")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("AggressorId")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("AggressorRecruitLosses")
                         .HasColumnType("INTEGER");
@@ -43,16 +44,23 @@ namespace Chaos.Data.Migrations
                     b.Property<int>("DefenderDefenderLosses")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("DefenderId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DefenderRecruitLosses")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("DefenderToolsLostJson")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Outcome")
+                        .HasColumnType("TEXT");
 
-                    b.HasKey("AggressorId", "DefenderId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("AggressorId");
+
+                    b.HasIndex("DefenderId");
 
                     b.ToTable("AfterActionReports");
                 });
@@ -180,6 +188,9 @@ namespace Chaos.Data.Migrations
 
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Outcome")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SapperRecruitLosses")
                         .HasColumnType("INTEGER");
@@ -346,6 +357,17 @@ namespace Chaos.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Chaos.Models.DbModels.AfterActionReport", b =>
+                {
+                    b.HasOne("Chaos.Models.DbModels.GameUser", null)
+                        .WithMany()
+                        .HasForeignKey("AggressorId");
+
+                    b.HasOne("Chaos.Models.DbModels.GameUser", null)
+                        .WithMany()
+                        .HasForeignKey("DefenderId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

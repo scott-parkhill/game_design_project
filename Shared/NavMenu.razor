@@ -1,8 +1,11 @@
 ﻿@using Chaos.Models.DbModels
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Identity
+@using Chaos.Business
+
 @inject UserManager<GameUser> userManager
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject IGameDbService dbService
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -16,7 +19,7 @@
 <div class="@NavMenuCssClass nav-scrollable">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <p class="navbar-brand ms-3" style="color: white"><i>@user?.UserName</i></p>
+            <p class="navbar-brand ms-3" style="color: white"><i>@user?.UserName@factionString</i></p>
         </div>
     </nav>
     <nav class="flex-column">
@@ -89,15 +92,25 @@
     GameUser? user;
     List<Claim?> claims = new();
 
+    Factions faction = Factions.None;
+    string factionString = "";
+    
     protected override async Task OnInitializedAsync()
     {
         user = await userManager.FindByIdAsync(LoggedUserId);
 
-        if (user is not null)
-        {
-            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-            claims = authState.User.Claims.Where(u => u.Type == ClaimTypes.Role).ToList();
-        }
+        if (user is null)
+            return;
+        
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        claims = authState.User.Claims.Where(u => u.Type == ClaimTypes.Role).ToList();
+        
+        faction = await dbService.GetUserFaction(user.Id);
+
+        if (faction is Factions.Dolphins)
+            factionString = " - Dolphin";
+        else if (faction is Factions.Pirates)
+            factionString = " - Pirate";
     }
 
     private void ToggleNavMenu()

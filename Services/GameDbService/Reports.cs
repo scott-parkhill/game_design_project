@@ -32,7 +32,8 @@ public partial class GameDbService : IGameDbService
             SapperSapperLosses = spyReport.SapperSapperLosses,
             SapperRecruitLosses = spyReport.SapperRecruitLosses,
             SentryRecruitLosses = spyReport.SentryRecruitLosses,
-            SentrySentryLosses = spyReport.SentrySentryLosses
+            SentrySentryLosses = spyReport.SentrySentryLosses,
+            Outcome = spyReport.Outcome
         };
 
         _context.Add(newReport);
@@ -51,7 +52,7 @@ public partial class GameDbService : IGameDbService
     
     public async Task<List<SpyReportViewModel>> GetSpyReports(string loggedUserId)
     {
-        return await _context.SpyReports.Where(u => u.SapperId == loggedUserId || u.SentryId == loggedUserId).ToViewModel().OrderBy(u => u.SpyTime).ToListAsync();
+        return await _context.SpyReports.Where(u => u.SapperId == loggedUserId || u.SentryId == loggedUserId).ToViewModel().OrderByDescending(u => u.SpyTime).ToListAsync();
     }
 
     public async Task<SpyReportViewModel?> GetSpyReport(int id)
@@ -62,11 +63,12 @@ public partial class GameDbService : IGameDbService
     #endregion
 
     #region After Action Reports
+
     public async Task<DbResult> CreateAfterActionReport(AfterActionReportViewModel afterActionReport)
     {
         if (!(await _context.GameUsers.AnyAsync(u => u.Id == afterActionReport.AggressorId)))
             return new(TaskResults.Invalid, "Aggressor doesn't exist in the database.");
-        
+
         if (!(await _context.GameUsers.AnyAsync(u => u.Id == afterActionReport.DefenderId)))
             return new(TaskResults.Invalid, "Defender doesn't exist in the database.");
 
@@ -81,7 +83,8 @@ public partial class GameDbService : IGameDbService
             DefenderCoinLosses = afterActionReport.DefenderCoinLosses,
             DefenderRecruitLosses = afterActionReport.DefenderRecruitLosses,
             DefenderDefenderLosses = afterActionReport.DefenderDefenderLosses,
-            DefenderToolsLostJson = JsonSerializer.Serialize(afterActionReport.DefenderToolsLost)
+            DefenderToolsLostJson = JsonSerializer.Serialize(afterActionReport.DefenderToolsLost),
+            Outcome = afterActionReport.Outcome
         };
 
         _context.Add(newReport);
@@ -100,7 +103,7 @@ public partial class GameDbService : IGameDbService
 
     public async Task<List<AfterActionReportViewModel>> GetAfterActionReports(string loggedUserId)
     {
-        return await _context.AfterActionReports.Where(u => u.AggressorId == loggedUserId || u.DefenderId == loggedUserId).ToViewModel().OrderBy(u => u.BattleTime).ToListAsync();
+        return await _context.AfterActionReports.Where(u => u.AggressorId == loggedUserId || u.DefenderId == loggedUserId).ToViewModel().OrderByDescending(u => u.BattleTime).ToListAsync();
     }
 
     public async Task<AfterActionReportViewModel?> GetAfterActionReport(int id)
@@ -118,7 +121,7 @@ public partial class GameDbService : IGameDbService
         var usernames = await _context.GameUsers.ToDictionaryAsync(u => u.Id, v => v.UserName);
         var userFactions = await _context.GameUsers.ToDictionaryAsync(u => u.Id, v => v.Faction);
 
-        return armies.Select(u => (usernames[u.UserId], ArmyScore: ArmyScore.GetArmyScore(u, userFactions[u.UserId]), u.Coins, userFactions[u.UserId])).OrderBy(u => u.ArmyScore).ToList();
+        return armies.Select(u => (usernames[u.UserId], ArmyScore: ArmyScore.GetArmyScore(u, userFactions[u.UserId]), u.Coins, userFactions[u.UserId])).OrderByDescending(u => u.ArmyScore).ToList();
     }
     
     #endregion

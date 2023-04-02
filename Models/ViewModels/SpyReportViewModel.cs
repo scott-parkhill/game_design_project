@@ -6,6 +6,7 @@ public class SpyReportViewModel
     public string SapperId { get; set; } = "";
     public string SentryId { get; set; } = "";
     public DateTime SpyTime { get; set; }
+    public string Outcome { get; set; } = "";
 
 
     #region Sapper

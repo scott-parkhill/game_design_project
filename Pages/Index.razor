@@ -1,7 +1,67 @@
 ﻿@page "/"
+
+@using Chaos.Models.DbModels
+@using Microsoft.AspNetCore.Identity;
+
 @inject IToastService toastService
 @inject ILogger<Index> logger
+@inject UserManager<GameUser> userManager
+@inject IGameDbService dbService
 
 <PageTitle>Dolphins vs. Pirates</PageTitle>
 
 <h1>Dolphins vs. Pirates</h1>
+
+<CardDeck Width="15rem">
+    @if (LoggedUserId is "")
+    {
+        <Card Link="register" Image="registration.png" MakeImageLink>
+            <Title>Register</Title>
+        </Card>
+        <Card Link="login" Image="login.png" MakeImageLink>
+            <Title>Login</Title>
+        </Card>
+    }
+    
+    @if (userIsAdmin)
+    {
+        <Card Link="Sandbox" Image="sandbox.png" MakeImageLink>
+            <Title>Sandbox</Title>
+        </Card>
+    }
+    
+    @if (LoggedUserId is not "")
+    {
+        <Card Link="army-dashboard" Image="dashboard.png" MakeImageLink>
+            <Title>Army Dashboard</Title>
+        </Card>
+        <Card Link="armoury" Image="armoury.png" MakeImageLink>
+            <Title>Armoury</Title>
+        </Card>
+        <Card Link="battle-centre" Image="battle.png" MakeImageLink>
+            <Title>Battle Centre</Title>
+        </Card>
+    }
+</CardDeck>
+
+@code
+{
+    [CascadingParameter(Name = "LoggedUserId")] string LoggedUserId { get; set; } = null!;
+    [CascadingParameter(Name = "Username")] string Username { get; set; } = null!;
+
+    bool userIsAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await userManager.FindByIdAsync(LoggedUserId);
+
+        if (user is null)
+            return;
+        
+        var userRoles = await userManager.GetRolesAsync(user);
+
+        if (userRoles.Contains("Admin"))
+            userIsAdmin = true;
+    }
+    
+}

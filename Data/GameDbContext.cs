@@ -22,7 +22,9 @@ public class GameDbContext : IdentityDbContext<GameUser>
 
         // Set foreign keys and other database parameters.
         builder.Entity<Army>().HasKey(u => new { u.UserId });
-        builder.Entity<AfterActionReport>().HasKey(u => new { u.AggressorId, u.DefenderId });
         builder.Entity<SpyReport>().HasKey(u => new { u.SapperId, u.SentryId });
+        builder.Entity<AfterActionReport>().HasOne<GameUser>().WithMany().HasForeignKey(u => u.AggressorId);
+        builder.Entity<AfterActionReport>().HasOne<GameUser>().WithMany().HasForeignKey(u => u.DefenderId);
+
     }
 }

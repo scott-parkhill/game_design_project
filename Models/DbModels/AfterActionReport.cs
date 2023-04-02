@@ -7,6 +7,7 @@ public class AfterActionReport
     public string AggressorId { get; set; }
     public string DefenderId { get; set; }
     public DateTime BattleTime { get; set; }
+    public string Outcome { get; set; } = "";
 
     #region Aggressor
     public int AggressorRecruitLosses { get; set; }

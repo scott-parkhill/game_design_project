@@ -197,12 +197,15 @@ public class BattleManager
             DefenderCoinLosses = coins,
             DefenderRecruitLosses = defenderOriginalRecruits - defenderArmy.Recruits,
             DefenderDefenderLosses = defenderOriginalDefenders - defenderArmy.Defenders,
-            DefenderToolsLost = defenderWeaponsData
+            DefenderToolsLost = defenderWeaponsData,
+            Outcome = outcome.Message
         };
         #endregion
 
         // TODO Consume result.
         (_, _) = await _dbService.CreateAfterActionReport(viewModel);
+
+        viewModel = (await _dbService.GetAfterActionReports(aggressorId))[0];
 
         return (outcome.Message, viewModel);
     }
@@ -386,12 +389,15 @@ public class BattleManager
             SentryToolsLost = defenderWeaponsData,
             SentryMaximumDefence = outcome.DefenceRange.Max,
             SentryMinimumDefence = outcome.DefenceRange.Min,
-            SapperStrength = aggressorScore
+            SapperStrength = aggressorScore,
+            Outcome = outcome.Message
         };
         #endregion
 
         // TODO Consume result.
         (_, _) = await _dbService.CreateSpyReport(viewModel);
+        
+        viewModel = (await _dbService.GetSpyReports(aggressorId))[0];
 
         return (outcome.Message, viewModel);
     }
