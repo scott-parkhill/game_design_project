@@ -1,0 +1,8 @@
+tr.battle-centre {
+    background-color: white;
+    cursor: pointer;
+
+    &:hover {
+        background-color: lightgray;
+    }
+}

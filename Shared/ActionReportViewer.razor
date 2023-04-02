@@ -28,7 +28,7 @@ else
             </thead>
             <tbody>
             <tr>
-                <td>@spyReport.SpyTime.ToShortDateString() @spyReport.SpyTime.ToShortTimeString()</td>
+                <td>@($"{spyReport.SpyTime.ToShortDateString()} {spyReport.SpyTime.ToShortTimeString()}")</td>
                 <td>@aggressorName</td>
                 <td>@defenderName</td>
                 <td>@spyReport.SapperStrength</td>
@@ -67,12 +67,12 @@ else
                     <td>Battle Time</td>
                     <td>Aggressor Name</td>
                     <td>Defender Name</td>
-                    <td>@GetCoinName() Stolen</td>
+                    <td>@currencyName Stolen</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>@afterActionReport.BattleTime.ToShortDateString() @afterActionReport.BattleTime.ToShortTimeString()</td>
+                    <td>@("${afterActionReport.BattleTime.ToShortDateString()} {afterActionReport.BattleTime.ToShortTimeString()}")</td>
                     <td>@aggressorName</td>
                     <td>@defenderName</td>
                     <td>@afterActionReport.AggressorCoinGains</td>
@@ -127,6 +127,8 @@ else
     string aggressorName = "";
     string defenderName = "";
 
+    string currencyName = "";
+
     bool loading = true;
     bool error;
 
@@ -141,6 +143,7 @@ else
                     error = true;
                     return;
                 }
+                await GetCoinName();
                 (aggressorName, defenderName) = await dbService.GetBelligerents(afterActionReport.AggressorId, afterActionReport.DefenderId);
                 break;
             case ReportTypes.SpyReport:
@@ -161,10 +164,10 @@ else
         loading = false;
     }
 
-    async Task<string> GetCoinName()
+    async Task GetCoinName()
     {
         var faction = await dbService.GetUserFaction(afterActionReport!.DefenderId);
 
-        return faction is Factions.Dolphins ? Utility.DolphinCurrency : Utility.PirateCurrency;
+        currencyName = faction is Factions.Dolphins ? Utility.DolphinCurrency : Utility.PirateCurrency;
     }
 }

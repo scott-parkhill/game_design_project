@@ -38,6 +38,9 @@ public static class ArmyScore{
     /// <summary> Format for the modifiers array: [attack, defence, sentry, sapper] (same as ActionTypes). </summary>
     static double[] GetArmyScores(ArmyViewModel army, Factions faction)
     {
+        if (faction is Factions.None)
+            return new[] {0.0,0,0,0,0};
+        
         double[] modifiers = faction switch
         {
             Factions.Pirates => new[] { 1.05, 1.05, 1, 1 },

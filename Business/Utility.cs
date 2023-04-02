@@ -1,6 +1,6 @@
 namespace Chaos.Business;
 
-public class Utility
+public static class Utility
 {
     public const string NotFound = "/not-found";
     public const string NotAuthorized = "/not-authorized";
@@ -8,6 +8,13 @@ public class Utility
 
     public const string DolphinCurrency = "Pearls";
     public const string PirateCurrency = "Pieces o' Eight";
+    
+    public static int GenerationMultiplier(double armyScore) => armyScore switch
+    {
+        < 1000 => 1,
+        >= 1000 and < 10000 => 2,
+        _ => 3
+    };
 }
 
 public enum Factions

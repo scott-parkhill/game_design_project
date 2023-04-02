@@ -56,40 +56,6 @@ public partial class GameDbService : IGameDbService
         return await _context.Armies.Where(u => u.UserId == userId).ToViewModel().SingleOrDefaultAsync();
     }
 
-    // TODO This is hacktastic, fix.
-    public async Task<DbResult> UpdateArmies()
-    {
-        var armies = await _context.Armies.ToListAsync();
-
-        foreach (var army in armies)
-        {
-            if (army.LastRecruitment.Date < DateTime.UtcNow.Date)
-            {
-                army.Recruits += army.RecruitRate;
-                army.LastRecruitment = DateTime.UtcNow;
-            }
-
-            if (army.LastCoinGeneration.Date < DateTime.UtcNow.Date)
-            {
-                army.Coins += army.CoinGenerationRate;
-                army.LastCoinGeneration = DateTime.UtcNow;
-            }
-        }
-
-        _context.UpdateRange(armies);
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateException)
-        {
-            return new(TaskResults.Failure, "Failed to add recruits and coins.");
-        }
-
-        return new(TaskResults.Success, "Successfully added recruits and coins.");
-    }
-
     public async Task<DbResult> UpdateSoldierCount(string loggedUserId, int recruits, int attackers, int defenders, int sentries, int sappers)
     {
         var army = await _context.Armies.Where(u => u.UserId == loggedUserId).FirstOrDefaultAsync();

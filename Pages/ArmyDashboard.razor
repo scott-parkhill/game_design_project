@@ -36,9 +36,9 @@ else
                 <tbody>
                 <tr>
                     <td>@userArmy.Coins</td>
-                    <td>@userArmy.CoinGenerationRate per day</td>
-                    <td>@userArmy.RecruitRate per day</td>
-                    <td>@((int)ArmyScore.GetArmyScore(userArmy, userFaction))</td>
+                    <td>@(userArmy.CoinGenerationRate * generationRate) per day</td>
+                    <td>@(userArmy.RecruitRate * generationRate) per day</td>
+                    <td>@armyScore</td>
                 </tr>
                 </tbody>
             </table>
@@ -103,7 +103,7 @@ else
                     @foreach (var report in afterActionReports)
                     {
                         <tr style="cursor:pointer" @onclick="() => ShowReport(report)">
-                            <td>@report.BattleTime.ToShortDateString @report.BattleTime.ToShortTimeString</td>
+                            <td>@($"{report.BattleTime.ToShortDateString()} {report.BattleTime.ToShortTimeString()}")</td>
                             <td>@aggressor</td>
                             <td>@defender</td>
                         </tr>
@@ -131,8 +131,8 @@ else
                     <tbody>
                     @foreach (var report in spyReports)
                     {
-                        <tr style="cursor:pointer" @onclick="() => ShowReport(report)">
-                            <td>@report.SpyTime.ToShortDateString @report.SpyTime.ToShortTimeString</td>
+                        <tr @key="report" style="cursor:pointer" @onclick="() => ShowReport(report)">
+                            <td>@($"{report.SpyTime.ToShortDateString()} {report.SpyTime.ToShortTimeString()}")</td>
                             <td>@aggressor</td>
                             <td>@defender</td>
                         </tr>
@@ -161,6 +161,9 @@ else
     List<SpyReportViewModel> spyReports = new();
 
     TrainingModel trainingModel = new();
+
+    double armyScore => ArmyScore.GetArmyScore(userArmy, userFaction);
+    double generationRate => Utility.GenerationMultiplier(armyScore);
 
     bool loading = true;
     bool error;

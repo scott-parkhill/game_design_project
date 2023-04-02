@@ -35,7 +35,7 @@ public class ArmyUpdaterService : IHostedService
         _timer.Stop();
         return Task.CompletedTask;
     }
-
+    
     async void UpdateDatabaseValues()
     {
         await using GameDbContext _context = await _dbContextFactory.CreateDbContextAsync();
@@ -47,12 +47,7 @@ public class ArmyUpdaterService : IHostedService
             var userFaction = await _context.GameUsers.Where(u => u.Id == army.UserId).Select(u => u.Faction).FirstAsync();
             var armyScore = ArmyScore.GetArmyScore(Queryable.AsQueryable(new List<Army>() { army }).ToViewModel().First(), userFaction);
 
-            int generationMultiplier = armyScore switch
-            {
-                < 1000 => 1,
-                >= 1000 and < 10000 => 2,
-                _ => 3
-            };
+            int generationMultiplier = Utility.GenerationMultiplier(armyScore);
             
             army.Recruits += army.RecruitRate * generationMultiplier;
             army.LastRecruitment = DateTime.UtcNow;

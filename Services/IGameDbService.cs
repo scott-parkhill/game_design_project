@@ -16,9 +16,6 @@ public interface IGameDbService
     /// <summary> Get the army view model for a given user, should it exist. </summary>
     Task<ArmyViewModel?> GetArmyViewModel(string userId);
 
-    /// <summary> This method updates all recruitment and coin generation stuff and is very hacky. </summary>
-    Task<DbResult> UpdateArmies();
-
     /// <summary> Update the army with the current number of soldiers. </summary>
     Task<DbResult> UpdateSoldierCount(string loggedUserId, int recruits, int attackers, int defenders, int sentries, int sappers);
 
@@ -36,6 +33,13 @@ public interface IGameDbService
     
     /// <summary> Get the faction for a given user. </summary>
     Task<Factions> GetUserFaction(string loggedUserId);
+
+    /// <summary>
+    /// Get user id from the database from a username.
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    Task<string> GetUserIdFromUsername(string username);
 
     /// <summary> Get the belligerents. </summary>
     Task<(string, string)> GetBelligerents(string aggressorId, string defenderId);

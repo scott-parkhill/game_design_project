@@ -21,6 +21,9 @@ else
     
     @if (step1)
     {
+        <br />
+        <h5><div class="oi oi-info" style="color:seagreen"/>&nbsp;&nbsp;<u>Click a row to go to attack choice screen.</u></h5>
+        
         <table class="table">
             <thead>
             <tr>
@@ -33,10 +36,10 @@ else
             <tbody>
             @foreach (var score in hiscores)
             {
-                <tr>
+                <tr class="battle-centre" @onclick="() => MoveToAttackScreen(score.Username)">
                     <td>@score.Username</td>
                     <td>@(score.Faction is Factions.Dolphins ? "Dolphin" : "Pirate")</td>
-                    <td>@score.ArmyScore</td>
+                    <td>@((int)score.ArmyScore)</td>
                     <td>@score.Coins</td>
                 </tr>
             }
@@ -120,6 +123,8 @@ else
 
     void MoveToAttackScreen(string username)
     {
+        if (username == Username)
+            return;
         loading = true;
         selectedUsername = username;
         step1 = step3 = false;
@@ -130,7 +135,7 @@ else
     async Task Battle()
     {
         loading = true;
-        var (_, defenderId) = await dbService.GetBelligerents(Username, selectedUsername);
+        var defenderId = await dbService.GetUserIdFromUsername(selectedUsername);
         (outcome, actionReport) = await BattleManager.AttackUser(LoggedUserId, defenderId);
         spyReport = null;
         step1 = step2 = false;
@@ -141,7 +146,7 @@ else
     async Task Sap()
     {
         loading = true;
-        var (_, defenderId) = await dbService.GetBelligerents(Username, selectedUsername);
+        var defenderId = await dbService.GetUserIdFromUsername(selectedUsername);
         (outcome, spyReport) = await BattleManager.SapUser(LoggedUserId, defenderId);
         actionReport = null;
         step1 = step2 = false;

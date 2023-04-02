@@ -73,7 +73,7 @@ public class BattleManager
         (result, message) = await _dbService.UpdateUserWeapons(aggressorId, newAggressorWeapons.Select(u => (aggressorWeapons.Where(v => v.WeaponType == u.WeaponType).Select(w => w.Count).First() - u.Count, false, u.WeaponType)).ToArray());
 
         if (result != TaskResults.Success)
-            throw new InvalidOperationException("Oh goodness me!");
+            throw new InvalidOperationException(message);
 
         List<UserWeapon> newDefenderWeapons = defenderArmy.UserWeapons.UserWeapons
                                         .Where(u => Weapon.Weapons[u.WeaponType].ActionType  == ActionTypes.Defence)
@@ -96,7 +96,7 @@ public class BattleManager
 
         // TODO This should really be done within a database transaction.
         if (result is not TaskResults.Success)
-            throw new InvalidOperationException("Oh no!");
+            throw new InvalidOperationException(message);
 
         #endregion
 
@@ -118,7 +118,7 @@ public class BattleManager
         (result, message) = await _dbService.UpdateSoldierCount(aggressorId, aggressorArmy.Recruits, aggressorArmy.Attackers, aggressorArmy.Defenders, aggressorArmy.Sentries, aggressorArmy.Sappers);
 
         if (result != TaskResults.Success)
-            throw new InvalidOperationException("Heavens me!");
+            throw new InvalidOperationException(message);
 
 
         // Defender recruit losses.
@@ -138,7 +138,7 @@ public class BattleManager
         (result, message) = await _dbService.UpdateSoldierCount(defenderId, defenderArmy.Recruits, defenderArmy.Attackers, defenderArmy.Defenders, defenderArmy.Sentries, defenderArmy.Sappers);
 
         if (result != TaskResults.Success)
-            throw new InvalidOperationException("SOS");
+            throw new InvalidOperationException(message);
 
         #endregion
 
@@ -270,7 +270,7 @@ public class BattleManager
         (result, message) = await _dbService.UpdateUserWeapons(aggressorId, newAggressorWeapons.Select(u => (aggressorWeapons.Where(v => v.WeaponType == u.WeaponType).Select(w => w.Count).First() - u.Count, false, u.WeaponType)).ToArray());
 
         if (result != TaskResults.Success)
-            throw new InvalidOperationException("Oh goodness me!");
+            throw new InvalidOperationException(message);
 
         List<UserWeapon> newDefenderWeapons = defenderArmy.UserWeapons.UserWeapons
                                                 .Select(u => new UserWeapon() { Count = u.Count, WeaponType = u.WeaponType }).ToList();
@@ -292,7 +292,7 @@ public class BattleManager
 
         // TODO This should really be done within a database transaction.
         if (result is not TaskResults.Success)
-            throw new InvalidOperationException("Oh no!");
+            throw new InvalidOperationException(message);
 
         #endregion
         
@@ -314,7 +314,7 @@ public class BattleManager
         (result, message) = await _dbService.UpdateSoldierCount(aggressorId, aggressorArmy.Recruits, aggressorArmy.Attackers, aggressorArmy.Defenders, aggressorArmy.Sentries, aggressorArmy.Sappers);
 
         if (result != TaskResults.Success)
-            throw new InvalidOperationException("Heavens me!");
+            throw new InvalidOperationException(message);
         
         // Defender recruit losses.
         for (int i = 0; i < defenderArmy.Recruits; ++i)
@@ -333,7 +333,7 @@ public class BattleManager
         (result, message) = await _dbService.UpdateSoldierCount(defenderId, defenderArmy.Recruits, defenderArmy.Attackers, defenderArmy.Defenders, defenderArmy.Sentries, defenderArmy.Sappers);
 
         if (result != TaskResults.Success)
-            throw new InvalidOperationException("SOS");
+            throw new InvalidOperationException(message);
 
         #endregion
         

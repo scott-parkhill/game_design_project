@@ -4,41 +4,49 @@
 @if (Data is not null)
 {
     <TabContainer>
-        @if (Data.GetWeaponsByActionType(ActionTypes.Offence).Any())
-        {
-            <TabSection Title="Offensive Weapons">@GetWeaponsList(ActionTypes.Offence)</TabSection>
-        }
-        else
-        {
-            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
-        }
+        <TabSection Title="Offensive Weapons">
+            @if (Data.GetWeaponsByActionType(ActionTypes.Offence).Any())
+            {
+                @GetWeaponsList(ActionTypes.Offence)
+            }
+            else
+            {
+                <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
+            }
+        </TabSection>
         
-        @if (Data.GetWeaponsByActionType(ActionTypes.Defence).Any())
-        {
-            <TabSection Title="Defensive Weapons">@GetWeaponsList(ActionTypes.Defence)</TabSection>
-        }
-        else
-        {
-            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
-        }
+        <TabSection Title="Defensive Weapons">
+            @if (Data.GetWeaponsByActionType(ActionTypes.Defence).Any())
+            {
+                @GetWeaponsList(ActionTypes.Defence)
+            }
+            else
+            {
+                <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
+            }
+        </TabSection>
         
-        @if (Data.GetWeaponsByActionType(ActionTypes.Sentry).Any())
-        {
-            <TabSection Title="Sentry Weapons">@GetWeaponsList(ActionTypes.Sentry)</TabSection>
-        }
-        else
-        {
-            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
-        }
+        <TabSection Title="Sentry Weapons">
+            @if (Data.GetWeaponsByActionType(ActionTypes.Sentry).Any())
+            {
+                @GetWeaponsList(ActionTypes.Sentry)
+            }
+            else
+            {
+                <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
+            }
+        </TabSection>
         
-        @if (Data.GetWeaponsByActionType(ActionTypes.Sapping).Any())
-        {
-            <TabSection Title="Sapper Weapons">@GetWeaponsList(ActionTypes.Sapping)</TabSection>
-        }
-        else
-        {
-            <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
-        }
+        <TabSection Title="Sapper Weapons">
+            @if (Data.GetWeaponsByActionType(ActionTypes.Sapping).Any())
+            {
+                @GetWeaponsList(ActionTypes.Sapping)
+            }
+            else
+            {
+                <h4>No weapon@(ShowAsWeaponsLost ? " losses" : "s found").</h4>
+            }
+        </TabSection>
     </TabContainer>
 
 }

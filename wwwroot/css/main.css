@@ -34,6 +34,14 @@ input.solid-placeholder::placeholder {
   opacity: 1;
 }
 
+tr.battle-centre {
+  background-color: white;
+  cursor: pointer;
+}
+tr.battle-centre:hover {
+  background-color: lightgray;
+}
+
 html, body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
