@@ -41,6 +41,13 @@ public interface IGameDbService
     /// <returns></returns>
     Task<string> GetUserIdFromUsername(string username);
 
+    /// <summary>
+    /// Get usernames from a list of user ids.
+    /// </summary>
+    /// <param name="userIds"></param>
+    /// <returns></returns>
+    Task<Dictionary<string, string>> GetUsernamesFromIds(IEnumerable<string> userIds);
+
     /// <summary> Get the belligerents. </summary>
     Task<(string, string)> GetBelligerents(string aggressorId, string defenderId);
     #endregion

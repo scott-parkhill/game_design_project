@@ -60,3 +60,7 @@ html, body {
 .nav-scrollable a {
   color: #FFF;
 }
+
+.nav-item.active {
+  color: #95dbe5;
+}

@@ -120,7 +120,7 @@ public partial class GameDbService : IGameDbService
         var armies = await _context.Armies.ToViewModel().ToListAsync();
         var usernames = await _context.GameUsers.ToDictionaryAsync(u => u.Id, v => v.UserName);
         var userFactions = await _context.GameUsers.ToDictionaryAsync(u => u.Id, v => v.Faction);
-
+        
         return armies.Select(u => (usernames[u.UserId], ArmyScore: ArmyScore.GetArmyScore(u, userFactions[u.UserId]), u.Coins, userFactions[u.UserId])).OrderByDescending(u => u.ArmyScore).ToList();
     }
     

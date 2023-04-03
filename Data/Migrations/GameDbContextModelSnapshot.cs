@@ -180,16 +180,14 @@ namespace Chaos.Data.Migrations
 
             modelBuilder.Entity("Chaos.Models.DbModels.SpyReport", b =>
                 {
-                    b.Property<string>("SapperId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SentryId")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Outcome")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SapperId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SapperRecruitLosses")
@@ -202,6 +200,9 @@ namespace Chaos.Data.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("SapperToolsLostJson")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SentryId")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("SentryMaximumDefence")
@@ -222,7 +223,11 @@ namespace Chaos.Data.Migrations
                     b.Property<DateTime>("SpyTime")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("SapperId", "SentryId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("SapperId");
+
+                    b.HasIndex("SentryId");
 
                     b.ToTable("SpyReports");
                 });
@@ -368,6 +373,17 @@ namespace Chaos.Data.Migrations
                     b.HasOne("Chaos.Models.DbModels.GameUser", null)
                         .WithMany()
                         .HasForeignKey("DefenderId");
+                });
+
+            modelBuilder.Entity("Chaos.Models.DbModels.SpyReport", b =>
+                {
+                    b.HasOne("Chaos.Models.DbModels.GameUser", null)
+                        .WithMany()
+                        .HasForeignKey("SapperId");
+
+                    b.HasOne("Chaos.Models.DbModels.GameUser", null)
+                        .WithMany()
+                        .HasForeignKey("SentryId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

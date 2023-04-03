@@ -115,8 +115,8 @@ else
                         {
                             <tr @key="report" style="cursor:pointer" @onclick="() => ShowReport(report)">
                                 <td>@($"{report.BattleTime.ToShortDateString()} {report.BattleTime.ToShortTimeString()} UTC")</td>
-                                <td>@aggressor</td>
-                                <td>@defender</td>
+                                <td>@usernames[report.AggressorId]</td>
+                                <td>@usernames[report.DefenderId]</td>
                                 <td>@report.Outcome</td>
                             </tr>
                         }
@@ -159,8 +159,8 @@ else
                         {
                             <tr @key="report" style="cursor:pointer" @onclick="() => ShowReport(report)">
                                 <td>@($"{report.SpyTime.ToShortDateString()} {report.SpyTime.ToShortTimeString()} UTC")</td>
-                                <td>@aggressor</td>
-                                <td>@defender</td>
+                                <td>@usernames[report.SapperId]</td>
+                                <td>@usernames[report.SentryId]</td>
                                 <td>@report.Outcome</td>
                             </tr>
                         }
@@ -199,8 +199,8 @@ else
     bool error;
     bool showingReport;
     int reportId;
-    string aggressor = "";
-    string defender = "";
+
+    Dictionary<string, string> usernames = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -225,21 +225,29 @@ else
         afterActionReports = await dbService.GetAfterActionReports(LoggedUserId);
         spyReports = await dbService.GetSpyReports(LoggedUserId);
 
+        IEnumerable<string> userIds = afterActionReports.Select(u => u.AggressorId).ToList();
+        userIds = userIds.Union(afterActionReports.Select(u => u.DefenderId).ToList());
+        userIds = userIds.Union(spyReports.Select(u => u.SapperId).ToList());
+        userIds = userIds.Union(spyReports.Select(u => u.SentryId).ToList());
+
+        usernames = await dbService.GetUsernamesFromIds(userIds);
+
         loading = false;
     }
 
-    void StopShowingReport() => showingReport = false;
+    void StopShowingReport()
+    {
+        showingReport = false;
+    }
 
     async Task ShowReport(AfterActionReportViewModel report)
     {
-        (aggressor, defender) = await dbService.GetBelligerents(report.AggressorId, report.DefenderId);
         reportId = report.Id;
         showingReport = true;
     }
     
     async Task ShowReport(SpyReportViewModel report)
     {
-        (aggressor, defender) = await dbService.GetBelligerents(report.SapperId, report.SentryId);
         reportId = report.Id;
         showingReport = true;
     }

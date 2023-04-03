@@ -36,7 +36,7 @@ else
             <tbody>
             @foreach (var score in hiscores)
             {
-                <tr class="battle-centre" @onclick="() => MoveToAttackScreen(score.Username)">
+                <tr class="@(score.Username == Username ? "" : "battle-centre")" @onclick="() => MoveToAttackScreen(score.Username)">
                     <td>@score.Username</td>
                     <td>@(score.Faction is Factions.Dolphins ? "Dolphin" : "Pirate")</td>
                     <td>@((int)score.ArmyScore)</td>

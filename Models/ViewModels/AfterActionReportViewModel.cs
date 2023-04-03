@@ -10,7 +10,7 @@ public class AfterActionReportViewModel
 
 
     #region Aggressor
-    public int AggressorCoinGains => -1 * DefenderCoinLosses;
+    public int AggressorCoinGains => DefenderCoinLosses;
     public int AggressorRecruitLosses { get; set; } = -1;
     public int AggressorAttackerLosses { get; set; } = -1;
     public UserWeaponsData AggressorToolsLost { get; set; } = new();

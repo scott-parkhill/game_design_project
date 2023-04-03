@@ -31,7 +31,7 @@
 
         @if (user is not null)
         {
-            if (claims.Any(u => u.Value == "Admin"))
+            if (roles.Contains("Admin"))
             {
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="sandbox">
@@ -90,7 +90,7 @@
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     bool collapseNavMenu;
     GameUser? user;
-    List<Claim?> claims = new();
+    List<string> roles = new();
 
     Factions faction = Factions.None;
     string factionString = "";
@@ -103,7 +103,7 @@
             return;
         
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        claims = authState.User.Claims.Where(u => u.Type == ClaimTypes.Role).ToList();
+        roles = authState.User.Claims.Where(u => u.Type == ClaimTypes.Role).Select(u => u.Value).ToList();
         
         faction = await dbService.GetUserFaction(user.Id);
 

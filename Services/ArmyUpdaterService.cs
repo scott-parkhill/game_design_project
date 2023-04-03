@@ -52,7 +52,7 @@ public class ArmyUpdaterService : IHostedService
             army.Recruits += army.RecruitRate * generationMultiplier;
             army.LastRecruitment = DateTime.UtcNow;
 
-            army.Coins += army.CoinGenerationRate * generationMultiplier;
+            army.Coins += army.CoinGenerationRate * generationMultiplier * 10;
             army.LastCoinGeneration = DateTime.UtcNow;
         }
 

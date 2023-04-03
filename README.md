@@ -1,6 +1,11 @@
 # Game Design Project
 
-Project for Game Design class.
+Project for Game Design class by:
+
+- Nolan Morris
+  - 251103372
+- Scott Parkhill
+  - 251125463
 
 ## Installation and Running
 

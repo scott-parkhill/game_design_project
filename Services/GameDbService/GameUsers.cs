@@ -17,6 +17,11 @@ public partial class GameDbService : IGameDbService
         return user.Faction;
     }
 
+    public async Task<Dictionary<string, string>> GetUsernamesFromIds(IEnumerable<string> userIds)
+    {
+        return await _context.GameUsers.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, v => v.UserName!);
+    }
+
     public async Task<string> GetUserIdFromUsername(string username)
     {
         var userId = await _context.GameUsers.Where(u => u.UserName == username).Select(u => u.Id).FirstOrDefaultAsync();

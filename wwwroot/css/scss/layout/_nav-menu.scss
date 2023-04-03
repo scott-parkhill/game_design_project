@@ -5,3 +5,7 @@
         color: $navbar-text;
     }
 }
+
+.nav-item.active {
+    color: $sky-blue;
+}
